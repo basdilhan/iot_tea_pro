@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'Auth_wrapper.dart'; // We will create this file
+import 'auth_wrapper.dart';
+
+// Define our "Tea Theme" colors
+class AppTheme {
+  static final Color primaryGreen = Colors.green[800]!; // Dark, rich green
+  static const Color lightGreen = Color(0xFFE8F5E9); // Very light green
+  static const Color accentOrange = Color(0xFFF57C00); // A "tea" color
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -10,54 +17,72 @@ void main() async {
 }
 
 class TeaWeigherApp extends StatelessWidget {
-  const TeaWeigherApp({super.key});
+  const TeaWeigherApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // Use a light cyan + light green color mix for a fresh, airy UI.
-    final Color seed = Colors.cyan;
     return MaterialApp(
       title: 'Tea Weigher',
-      theme: ThemeData.from(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: seed,
-          primary: Colors.cyan.shade600,
-          secondary: Colors.green.shade300,
-          brightness: Brightness.light,
-        ),
-      ).copyWith(
-        useMaterial3: true,
-        scaffoldBackgroundColor: Colors.grey[50],
+      theme: ThemeData(
+        primarySwatch: Colors.green,
+        primaryColor: AppTheme.primaryGreen,
+        scaffoldBackgroundColor: AppTheme.lightGreen, // Light green background
+        // App Bar Theme
         appBarTheme: AppBarTheme(
-          surfaceTintColor: Colors.transparent,
-          backgroundColor: Colors.cyan.shade600,
-          foregroundColor: Colors.white,
-          elevation: 2,
-          centerTitle: true,
+          backgroundColor: AppTheme.primaryGreen,
+          elevation: 4,
+          titleTextStyle: const TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+          iconTheme: const IconThemeData(color: Colors.white),
         ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.cyan.shade600,
-            foregroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            padding: const EdgeInsets.symmetric(vertical: 14),
+
+        // Card Theme
+        cardTheme: CardThemeData(
+          elevation: 2,
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0),
           ),
         ),
-        floatingActionButtonTheme: FloatingActionButtonThemeData(
-          backgroundColor: Colors.green.shade400,
-          foregroundColor: Colors.white,
+
+        // Button Theme
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: AppTheme.accentOrange, // Use accent color
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+          ),
         ),
+
+        // Bottom Nav Bar Theme
         bottomNavigationBarTheme: BottomNavigationBarThemeData(
-          selectedItemColor: Colors.cyan.shade700,
+          backgroundColor: Colors.white,
+          selectedItemColor: AppTheme.primaryGreen,
           unselectedItemColor: Colors.grey[600],
-          showUnselectedLabels: true,
+          type: BottomNavigationBarType.fixed, // Important for 4+ items
         ),
-        // Keep cards default but use rounded corners by using a lighter elevation
-        // (leave CardTheme to system defaults for compatibility)
+
+        // Input Field Theme
+        inputDecorationTheme: InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.0),
+            borderSide: BorderSide(color: Colors.grey[400]!),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.0),
+            borderSide: BorderSide(color: AppTheme.primaryGreen, width: 2.0),
+          ),
+          labelStyle: TextStyle(color: AppTheme.primaryGreen),
+          prefixIconColor: Colors.grey[600],
+        ),
       ),
-      home: const AuthWrapper(), // This is the new home
+      home: const AuthWrapper(),
     );
   }
 }

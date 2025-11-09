@@ -1,213 +1,185 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:intl/intl.dart'; // For formatting the date
+import 'package:intl/intl.dart';
+import '../main.dart'; // To use AppTheme
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key});
+  const DashboardScreen({Key? key}) : super(key: key);
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  // Reference to the latest reading
-  final DatabaseReference _databaseRef = FirebaseDatabase.instance.ref(
+  final DatabaseReference _latestRef = FirebaseDatabase.instance.ref(
     '/latest_reading',
+  );
+
+  // New reference to today's logs
+  final DatabaseReference _todayLogRef = FirebaseDatabase.instance.ref(
+    '/weighing_logs/${DateFormat('yyyy-MM-dd').format(DateTime.now())}',
   );
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Smart Tea Weigher'), centerTitle: true),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          // StreamBuilder listens for real-time changes
-          child: StreamBuilder(
-            stream: _databaseRef.onValue,
-            builder: (context, AsyncSnapshot<DatabaseEvent> snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const CircularProgressIndicator();
-              }
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Live Dashboard',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: AppTheme.primaryGreen,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Today: ${DateFormat('MMMM d, yyyy').format(DateTime.now())}',
+            style: const TextStyle(fontSize: 16, color: Colors.grey),
+          ),
+          const SizedBox(height: 20),
 
-              if (snapshot.hasError) {
-                return Text('Error: ${snapshot.error}');
-              }
+          // StreamBuilder for the "Live" card
+          StreamBuilder(
+            stream: _latestRef.onValue,
+            builder: (context, AsyncSnapshot<DatabaseEvent> snapshot) {
+              String liveWeight = "0.0";
+              String lastFarmer = "-";
 
               if (snapshot.hasData && snapshot.data!.snapshot.value != null) {
                 Map<dynamic, dynamic> data =
                     snapshot.data!.snapshot.value as Map<dynamic, dynamic>;
-
-                // Read all data from /latest_reading
-                String weight = data['weight']?.toString() ?? '0.0';
-                String unit = data['unit']?.toString() ?? 'kg';
-                int timestamp = data['timestamp'] ?? 0;
-                String farmerId = data['farmer_id']?.toString() ?? 'N/A';
-
-                Map<dynamic, dynamic> gpsData =
-                    data['gps_location'] as Map<dynamic, dynamic>? ?? {};
-                String lat = gpsData['latitude']?.toString() ?? 'N/A';
-                String lon = gpsData['longitude']?.toString() ?? 'N/A';
-
-                String formattedTime = 'No timestamp';
-                if (timestamp != 0) {
-                  formattedTime = DateFormat('MMM d, yyyy - hh:mm a').format(
-                    DateTime.fromMillisecondsSinceEpoch(timestamp * 1000),
-                  );
-                }
-
-                // Pass all data to the display card
-                return WeightDisplayCard(
-                  weight: weight,
-                  unit: unit,
-                  time: formattedTime,
-                  latitude: lat,
-                  longitude: lon,
-                  farmerId: farmerId,
-                );
+                liveWeight = data['weight']?.toString() ?? '0.0';
+                lastFarmer = data['farmer_id']?.toString() ?? '-';
               }
 
-              return const Text(
-                'Waiting for data from IoT device...',
-                style: TextStyle(fontSize: 18, color: Colors.grey),
-                textAlign: TextAlign.center,
+              return _StatCard(
+                title: 'Live Weight',
+                value: '$liveWeight kg',
+                subtitle: 'Last reading from Farmer $lastFarmer',
+                icon: Icons.satellite_alt,
+                color: AppTheme.primaryGreen,
               );
             },
           ),
-        ),
+
+          const SizedBox(height: 16),
+
+          // StreamBuilder for "Today's" totals
+          StreamBuilder(
+            stream: _todayLogRef.onValue,
+            builder: (context, AsyncSnapshot<DatabaseEvent> snapshot) {
+              double totalWeight = 0.0;
+              int totalWeighIns = 0;
+
+              if (snapshot.hasData && snapshot.data!.snapshot.value != null) {
+                Map<dynamic, dynamic> logs =
+                    snapshot.data!.snapshot.value as Map<dynamic, dynamic>;
+
+                totalWeighIns = logs.length;
+
+                for (var log in logs.values) {
+                  totalWeight += (log['weight'] ?? 0.0).toDouble();
+                }
+              }
+
+              // Use a GridView for the other stats
+              return GridView.count(
+                crossAxisCount: 2,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                shrinkWrap:
+                    true, // Important for GridView in SingleChildScrollView
+                physics: const NeverScrollableScrollPhysics(),
+                children: [
+                  _StatCard(
+                    title: 'Total Today',
+                    value: '${totalWeight.toStringAsFixed(1)} kg',
+                    subtitle: 'From $totalWeighIns weigh-ins',
+                    icon: Icons.scale,
+                    color: AppTheme.accentOrange,
+                  ),
+                  _StatCard(
+                    title: 'Total Weigh-ins',
+                    value: '$totalWeighIns',
+                    subtitle: 'All collection points',
+                    icon: Icons.shopping_bag,
+                    color: Colors.blue[700]!,
+                  ),
+                ],
+              );
+            },
+          ),
+        ],
       ),
     );
   }
 }
 
-// This card now also takes 'farmerId' and looks up the name.
-class WeightDisplayCard extends StatelessWidget {
-  final String weight;
-  final String unit;
-  final String time;
-  final String latitude;
-  final String longitude;
-  final String farmerId;
+// A re-usable widget for the dashboard cards
+class _StatCard extends StatelessWidget {
+  final String title;
+  final String value;
+  final String subtitle;
+  final IconData icon;
+  final Color color;
 
-  const WeightDisplayCard({
-    super.key,
-    required this.weight,
-    required this.unit,
-    required this.time,
-    required this.latitude,
-    required this.longitude,
-    required this.farmerId,
+  const _StatCard({
+    required this.title,
+    required this.value,
+    required this.subtitle,
+    required this.icon,
+    required this.color,
   });
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 8.0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
-      child: Container(
-        padding: const EdgeInsets.all(25.0),
+      color: color,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // --- Weight Section ---
-            Text(
-              'CURRENT WEIGHT',
-              style: TextStyle(
-                fontSize: 22.0,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.secondary,
-              ),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.baseline,
-              textBaseline: TextBaseline.alphabetic,
+            Icon(icon, size: 32, color: Colors.white),
+            const SizedBox(height: 10),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  weight,
+                  value,
                   style: const TextStyle(
-                    fontSize: 72.0,
+                    fontSize: 24,
                     fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
                 ),
-                const SizedBox(width: 10),
                 Text(
-                  unit,
-                  style: const TextStyle(
-                    fontSize: 28.0,
-                    fontWeight: FontWeight.w500,
+                  title,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white.withOpacity(0.9),
                   ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.white.withOpacity(0.7),
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
-            const SizedBox(height: 30),
-            const Divider(),
-            const SizedBox(height: 20),
-
-            // --- Farmer Details Section ---
-            _buildFarmerDetails(farmerId),
-
-            const SizedBox(height: 20),
-            const Divider(),
-            const SizedBox(height: 20),
-
-            // --- Reading Details Section ---
-            _buildDetailRow('Last Reading:', time),
-            _buildDetailRow('GPS Location:', '$latitude, $longitude'),
           ],
         ),
       ),
-    );
-  }
-
-  // Helper widget to build a simple info row
-  Widget _buildDetailRow(String title, String value) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Colors.grey[800],
-          ),
-        ),
-        Text(value, style: const TextStyle(fontSize: 16)),
-        const SizedBox(height: 15),
-      ],
-    );
-  }
-
-  // This widget fetches the farmer's name
-  Widget _buildFarmerDetails(String farmerId) {
-    final DatabaseReference workerNameRef = FirebaseDatabase.instance.ref(
-      '/workers/$farmerId/name',
-    );
-
-    return FutureBuilder(
-      future: workerNameRef.once(), // Get the data just one time
-      builder: (context, AsyncSnapshot<DatabaseEvent> snapshot) {
-        String farmerName = 'Loading...';
-
-        if (snapshot.hasData && snapshot.data!.snapshot.value != null) {
-          farmerName = snapshot.data!.snapshot.value.toString();
-        } else if (snapshot.hasError) {
-          farmerName = 'Error';
-        } else if (snapshot.hasData && snapshot.data!.snapshot.value == null) {
-          farmerName = 'Unknown ID';
-        }
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildDetailRow('Farmer ID:', farmerId),
-            _buildDetailRow('Farmer Name:', farmerName),
-          ],
-        );
-      },
     );
   }
 }

@@ -1,6 +1,6 @@
 {
   "latest_reading": {
-    "farmer_id": "0000",
+    "farmer_id": "1234",
     "device_id": "scale_01",
     "gps_location": {
       "latitude": 6.9271,
@@ -8,30 +8,33 @@
     },
     "timestamp": 1678886400,
     "unit": "kg",
-    "weight": 0.0
+    "weight": 12.5
   },
-  "weighing_log": {
-    "log_id_001": {
-      "farmer_id": "1234",
-      "device_id": "scale_01",
-      "gps_location": {
-        "latitude": 6.9271,
-        "longitude": 79.8612
+  "weighing_logs": {
+    "2025-11-09": {
+      "-Logs_ID_001": {
+        "farmer_id": "1234",
+        "device_id": "scale_01",
+        "timestamp": 1678886400,
+        "unit": "kg",
+        "weight": 12.5
       },
-      "timestamp": 1678886400,
-      "unit": "kg",
-      "weight": 10.5
+      "-Logs_ID_002": {
+        "farmer_id": "5678",
+        "device_id": "scale_01",
+        "timestamp": 1678886900,
+        "unit": "kg",
+        "weight": 15.2
+      }
     },
-    "log_id_002": {
-      "farmer_id": "5678",
-      "device_id": "scale_01",
-      "gps_location": {
-        "latitude": 6.9280,
-        "longitude": 79.8620
-      },
-      "timestamp": 1678886900,
-      "unit": "kg",
-      "weight": 15.2
+    "2025-11-08": {
+      "-Logs_ID_003": {
+        "farmer_id": "1234",
+        "device_id": "scale_01",
+        "timestamp": 1678880000,
+        "unit": "kg",
+        "weight": 20.1
+      }
     }
   },
   "workers": {
@@ -40,13 +43,6 @@
     },
     "5678": {
       "name": "Sunitha Silva"
-    }
-  },
-  "app_users": {
-    "USER_AUTH_ID_FROM_FIREBASE": {
-      "name": "Manager Name",
-      "email": "manager@email.com",
-      "role": "manager"
     }
   },
   "devices": {
