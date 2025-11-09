@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "120562347171",
+    "firebase_url": "https://tealeafpro-default-rtdb.firebaseio.com",
+    "project_id": "tealeafpro",
+    "storage_bucket": "tealeafpro.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:120562347171:android:379936cf91d3e340222316",
+        "android_client_info": {
+          "package_name": "com.example.iot_tea"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7hMrSmv-pjWNskK2nAH4ddPkfYFMMVJ0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

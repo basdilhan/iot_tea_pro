@@ -1,0 +1,57 @@
+{
+  "latest_reading": {
+    "farmer_id": "0000",
+    "device_id": "scale_01",
+    "gps_location": {
+      "latitude": 6.9271,
+      "longitude": 79.8612
+    },
+    "timestamp": 1678886400,
+    "unit": "kg",
+    "weight": 0.0
+  },
+  "weighing_log": {
+    "log_id_001": {
+      "farmer_id": "1234",
+      "device_id": "scale_01",
+      "gps_location": {
+        "latitude": 6.9271,
+        "longitude": 79.8612
+      },
+      "timestamp": 1678886400,
+      "unit": "kg",
+      "weight": 10.5
+    },
+    "log_id_002": {
+      "farmer_id": "5678",
+      "device_id": "scale_01",
+      "gps_location": {
+        "latitude": 6.9280,
+        "longitude": 79.8620
+      },
+      "timestamp": 1678886900,
+      "unit": "kg",
+      "weight": 15.2
+    }
+  },
+  "workers": {
+    "1234": {
+      "name": "Nimal Perera"
+    },
+    "5678": {
+      "name": "Sunitha Silva"
+    }
+  },
+  "app_users": {
+    "USER_AUTH_ID_FROM_FIREBASE": {
+      "name": "Manager Name",
+      "email": "manager@email.com",
+      "role": "manager"
+    }
+  },
+  "devices": {
+    "scale_01": {
+      "location_name": "Estate Block A"
+    }
+  }
+}
