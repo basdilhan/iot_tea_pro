@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:intl/intl.dart';
+import 'package:fl_chart/fl_chart.dart';
 import '../main.dart'; // For theme
 
 class ReportsScreen extends StatefulWidget {
-  const ReportsScreen({Key? key}) : super(key: key);
+  const ReportsScreen({super.key});
 
   @override
   State<ReportsScreen> createState() => _ReportsScreenState();
@@ -50,6 +51,83 @@ class _ReportsScreenState extends State<ReportsScreen> {
     return 'Unknown ID: $farmerId';
   }
 
+  List<PieChartSectionData> _buildPieChartSections() {
+    List<PieChartSectionData> sections = [];
+    List<Color> colors = [
+      Colors.blue,
+      Colors.green,
+      Colors.orange,
+      Colors.red,
+      Colors.purple,
+      Colors.teal,
+      Colors.pink,
+    ];
+
+    var sortedFarmers = _farmerTotals.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+
+    double totalWeight = sortedFarmers.fold(
+      0.0,
+      (sum, entry) => sum + entry.value,
+    );
+
+    for (int i = 0; i < sortedFarmers.length && i < 7; i++) {
+      double percentage = (totalWeight > 0)
+          ? (sortedFarmers[i].value / totalWeight) * 100
+          : 0;
+      sections.add(
+        PieChartSectionData(
+          value: sortedFarmers[i].value,
+          title: '${percentage.toStringAsFixed(1)}%',
+          color: colors[i % colors.length],
+          radius: 50,
+          titleStyle: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+      );
+    }
+    return sections;
+  }
+
+  List<Widget> _buildLegend() {
+    List<Widget> legendItems = [];
+    List<Color> colors = [
+      Colors.blue,
+      Colors.green,
+      Colors.orange,
+      Colors.red,
+      Colors.purple,
+      Colors.teal,
+      Colors.pink,
+    ];
+
+    var sortedFarmers = _farmerTotals.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+
+    for (int i = 0; i < sortedFarmers.length && i < 7; i++) {
+      legendItems.add(
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(width: 12, height: 12, color: colors[i % colors.length]),
+            const SizedBox(width: 4),
+            Text(
+              'Farmer ${sortedFarmers[i].key}',
+              style: TextStyle(
+                fontSize: 12,
+                color: AppTheme.textColor(context),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    return legendItems;
+  }
+
   @override
   Widget build(BuildContext context) {
     // Reference to the logs for the selected date
@@ -74,7 +152,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: AppTheme.primaryGreen,
+                      color: AppTheme.primaryGreen(context),
                     ),
                   ),
                   Text(
@@ -84,12 +162,15 @@ class _ReportsScreenState extends State<ReportsScreen> {
                 ],
               ),
               TextButton.icon(
-                icon: Icon(Icons.calendar_today, color: AppTheme.accentOrange),
+                icon: Icon(
+                  Icons.calendar_today,
+                  color: AppTheme.accentOrange(context),
+                ),
                 label: Text(
                   DateFormat('MMM d, yyyy').format(_selectedDate),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: AppTheme.accentOrange,
+                    color: AppTheme.accentOrange(context),
                   ),
                 ),
                 onPressed: () => _selectDate(context),
@@ -136,50 +217,105 @@ class _ReportsScreenState extends State<ReportsScreen> {
                 var sortedEntries = _farmerTotals.entries.toList()
                   ..sort((a, b) => b.value.compareTo(a.value));
 
-                return ListView.builder(
-                  itemCount: sortedEntries.length,
-                  itemBuilder: (context, index) {
-                    String farmerId = sortedEntries[index].key;
-                    double totalWeight = sortedEntries[index].value;
-
-                    // Use a FutureBuilder to get the farmer's name
-                    return FutureBuilder(
-                      future: _getFarmerName(farmerId),
-                      builder: (context, AsyncSnapshot<String> nameSnapshot) {
-                        String name = nameSnapshot.data ?? 'Loading...';
-                        return Card(
-                          margin: const EdgeInsets.symmetric(vertical: 6),
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: AppTheme.primaryGreen,
-                              child: Text(
-                                '${index + 1}',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
+                return SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      // Pie Chart for Farmer Contributions
+                      if (_farmerTotals.isNotEmpty)
+                        Card(
+                          color: AppTheme.cardColor(context),
+                          margin: const EdgeInsets.only(bottom: 20),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Farmer Contributions',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppTheme.textColor(context),
+                                  ),
                                 ),
-                              ),
-                            ),
-                            title: Text(
-                              name,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            subtitle: Text('ID: $farmerId'),
-                            trailing: Text(
-                              '${totalWeight.toStringAsFixed(1)} kg',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: AppTheme.accentOrange,
-                              ),
+                                const SizedBox(height: 16),
+                                SizedBox(
+                                  height: 200,
+                                  child: PieChart(
+                                    PieChartData(
+                                      sections: _buildPieChartSections(),
+                                      sectionsSpace: 2,
+                                      centerSpaceRadius: 40,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                                Wrap(
+                                  spacing: 8,
+                                  runSpacing: 4,
+                                  children: _buildLegend(),
+                                ),
+                              ],
                             ),
                           ),
-                        );
-                      },
-                    );
-                  },
+                        ),
+
+                      // Farmer List
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: sortedEntries.length,
+                        itemBuilder: (context, index) {
+                          String farmerId = sortedEntries[index].key;
+                          double totalWeight = sortedEntries[index].value;
+
+                          // Use a FutureBuilder to get the farmer's name
+                          return FutureBuilder(
+                            future: _getFarmerName(farmerId),
+                            builder:
+                                (context, AsyncSnapshot<String> nameSnapshot) {
+                                  String name =
+                                      nameSnapshot.data ?? 'Loading...';
+                                  return Card(
+                                    margin: const EdgeInsets.symmetric(
+                                      vertical: 6,
+                                    ),
+                                    child: ListTile(
+                                      leading: CircleAvatar(
+                                        backgroundColor: AppTheme.primaryGreen(
+                                          context,
+                                        ),
+                                        child: Text(
+                                          '${index + 1}',
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                      title: Text(
+                                        name,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      subtitle: Text('ID: $farmerId'),
+                                      trailing: Text(
+                                        '${totalWeight.toStringAsFixed(1)} kg',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: AppTheme.accentOrange(context),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                 );
               },
             ),

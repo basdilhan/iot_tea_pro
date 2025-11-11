@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import '../main.dart'; // For theme
 
 class LogListScreen extends StatefulWidget {
-  const LogListScreen({Key? key}) : super(key: key);
+  const LogListScreen({super.key});
 
   @override
   State<LogListScreen> createState() => _LogListScreenState();
@@ -83,7 +83,7 @@ class _LogListScreenState extends State<LogListScreen> {
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: AppTheme.primaryGreen,
+                      color: AppTheme.primaryGreen(context),
                     ),
                   ),
                   const Text(
@@ -93,12 +93,15 @@ class _LogListScreenState extends State<LogListScreen> {
                 ],
               ),
               TextButton.icon(
-                icon: Icon(Icons.calendar_today, color: AppTheme.accentOrange),
+                icon: Icon(
+                  Icons.calendar_today,
+                  color: AppTheme.accentOrange(context),
+                ),
                 label: Text(
                   DateFormat('MMM d, yyyy').format(_selectedDate),
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: AppTheme.accentOrange,
+                    color: AppTheme.accentOrange(context),
                   ),
                 ),
                 onPressed: () => _selectDate(context),
@@ -169,15 +172,15 @@ class _LogListScreenState extends State<LogListScreen> {
                       margin: const EdgeInsets.symmetric(vertical: 6),
                       child: ListTile(
                         leading: CircleAvatar(
-                          backgroundColor: AppTheme.primaryGreen.withOpacity(
-                            0.1,
-                          ),
+                          backgroundColor: AppTheme.primaryGreen(
+                            context,
+                          ).withOpacity(0.1),
                           child: Text(
                             weight,
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
-                              color: AppTheme.primaryGreen,
+                              color: AppTheme.primaryGreen(context),
                             ),
                           ),
                         ),
@@ -209,7 +212,7 @@ class _LogListScreenState extends State<LogListScreen> {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: AppTheme.accentOrange,
+                            color: AppTheme.accentOrange(context),
                           ),
                         ),
                       ),
