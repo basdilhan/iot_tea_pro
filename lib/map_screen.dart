@@ -11,8 +11,11 @@ class MapScreen extends StatefulWidget {
 }
 
 class MapScreenState extends State<MapScreen> {
-  final DatabaseReference _databaseRef = FirebaseDatabase.instance.ref(
-    '/latest_reading',
+  final DatabaseReference _workersRef = FirebaseDatabase.instance.ref(
+    '/workers',
+  );
+  final DatabaseReference _devicesRef = FirebaseDatabase.instance.ref(
+    '/devices',
   );
 
   @override
@@ -60,73 +63,101 @@ class MapScreenState extends State<MapScreen> {
       );
     }
     return StreamBuilder(
-      stream: _databaseRef.onValue,
+      stream: _workersRef.onValue,
       builder: (context, AsyncSnapshot<DatabaseEvent> snapshot) {
         if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
         }
 
-        Map<dynamic, dynamic> data =
+        Map<dynamic, dynamic> workersData =
             snapshot.data!.snapshot.value as Map<dynamic, dynamic>;
 
-        Map<dynamic, dynamic> gpsData =
-            data['gps_location'] as Map<dynamic, dynamic>? ?? {};
-
-        double lat = gpsData['latitude']?.toDouble() ?? 6.9271;
-        double lon = gpsData['longitude']?.toDouble() ?? 79.8612;
-
-        return Center(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Card(
-              color: AppTheme.cardColor(context),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'GPS Location Data',
-                      style: TextStyle(
-                        color: AppTheme.textColor(context),
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Latitude: $lat',
-                      style: TextStyle(
-                        color: AppTheme.textColor(context),
-                        fontSize: 16,
-                      ),
-                    ),
-                    Text(
-                      'Longitude: $lon',
-                      style: TextStyle(
-                        color: AppTheme.textColor(context),
-                        fontSize: 16,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Farmer ID: ${data['farmer_id'] ?? 'Unknown'}',
-                      style: TextStyle(
-                        color: AppTheme.textColor(context),
-                        fontSize: 16,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Note: Google Maps integration removed for web compatibility. '
-                      'Add flutter_map package for map visualization.',
-                      style: TextStyle(color: Colors.grey[600], fontSize: 14),
-                    ),
-                  ],
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Worker GPS Locations',
+                style: TextStyle(
+                  color: AppTheme.textColor(context),
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
                 ),
               ),
-            ),
+              const SizedBox(height: 16),
+              ...workersData.entries.map((entry) {
+                String workerId = entry.key;
+                Map<dynamic, dynamic> worker =
+                    entry.value as Map<dynamic, dynamic>;
+                Map<dynamic, dynamic> homeGps =
+                    worker['home_gps_location'] as Map<dynamic, dynamic>? ?? {};
+
+                double lat = homeGps['latitude']?.toDouble() ?? 0.0;
+                double lon = homeGps['longitude']?.toDouble() ?? 0.0;
+                String name = worker['name'] ?? 'Unknown';
+                String assignedArea = worker['assigned_area'] ?? 'Unknown';
+
+                return Card(
+                  color: AppTheme.cardColor(context),
+                  margin: const EdgeInsets.only(bottom: 12.0),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          name,
+                          style: TextStyle(
+                            color: AppTheme.textColor(context),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Worker ID: $workerId',
+                          style: TextStyle(
+                            color: AppTheme.textColor(context),
+                            fontSize: 14,
+                          ),
+                        ),
+                        Text(
+                          'Assigned Area: $assignedArea',
+                          style: TextStyle(
+                            color: AppTheme.textColor(context),
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Home GPS Location:',
+                          style: TextStyle(
+                            color: AppTheme.textColor(context),
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                          ),
+                        ),
+                        Text(
+                          'Latitude: $lat',
+                          style: TextStyle(
+                            color: AppTheme.textColor(context),
+                            fontSize: 14,
+                          ),
+                        ),
+                        Text(
+                          'Longitude: $lon',
+                          style: TextStyle(
+                            color: AppTheme.textColor(context),
+                            fontSize: 14,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }).toList(),
+            ],
           ),
         );
       },
