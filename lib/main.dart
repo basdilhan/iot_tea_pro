@@ -5,32 +5,47 @@ import 'firebase_options.dart';
 import 'auth_wrapper.dart';
 import 'theme_provider.dart';
 
-// Define our "Tea Theme" colors with light/dark support
+// Define our "Tea Theme" colors with light/dark support - Navy Blue, Brown, Grey theme
 class AppTheme {
-  static Color primaryGreen(BuildContext context) {
+  static Color primaryNavy(BuildContext context) {
     final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
-    return isDark ? Colors.green[300]! : Colors.green[800]!;
+    return isDark ? const Color(0xFF4A90E2) : const Color(0xFF1A365D);
   }
 
-  static Color lightGreen(BuildContext context) {
+  static Color secondaryBrown(BuildContext context) {
     final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
-    return isDark ? const Color(0xFF1B5E20) : const Color(0xFFE8F5E9);
+    return isDark ? const Color(0xFF8B4513) : const Color(0xFF8B4513);
   }
 
-  static Color accentOrange(BuildContext context) {
+  static Color accentGrey(BuildContext context) {
     final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
-    return isDark ? const Color(0xFFFF9800) : const Color(0xFFF57C00);
+    return isDark ? const Color(0xFF6B7280) : const Color(0xFF4B5563);
+  }
+
+  static Color lightNavy(BuildContext context) {
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
+    return isDark ? const Color(0xFF2B77E6) : const Color(0xFF2D3748);
+  }
+
+  static Color lightBrown(BuildContext context) {
+    final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
+    return isDark ? const Color(0xFFCD853F) : const Color(0xFFD2691E);
   }
 
   static Color cardColor(BuildContext context) {
     final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
-    return isDark ? Colors.grey[800]! : Colors.white;
+    return isDark ? const Color(0xFF374151) : Colors.white;
   }
 
   static Color textColor(BuildContext context) {
     final isDark = Provider.of<ThemeProvider>(context).isDarkMode;
     return isDark ? Colors.white : Colors.black;
   }
+
+  // Legacy support for backward compatibility
+  static Color primaryGreen(BuildContext context) => primaryNavy(context);
+  static Color lightGreen(BuildContext context) => lightNavy(context);
+  static Color accentOrange(BuildContext context) => secondaryBrown(context);
 }
 
 void main() async {
@@ -67,11 +82,11 @@ class TeaWeigherApp extends StatelessWidget {
 
   ThemeData _buildLightTheme() {
     return ThemeData(
-      primarySwatch: Colors.green,
-      primaryColor: Colors.green[800],
-      scaffoldBackgroundColor: const Color(0xFFE8F5E9),
+      primarySwatch: Colors.blue,
+      primaryColor: const Color(0xFF1A365D),
+      scaffoldBackgroundColor: const Color(0xFFF7FAFC),
       appBarTheme: AppBarTheme(
-        backgroundColor: Colors.green[800],
+        backgroundColor: const Color(0xFF1A365D),
         elevation: 4,
         titleTextStyle: const TextStyle(
           color: Colors.white,
@@ -89,7 +104,7 @@ class TeaWeigherApp extends StatelessWidget {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFFF57C00),
+          backgroundColor: const Color(0xFF8B4513),
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0),
@@ -99,7 +114,7 @@ class TeaWeigherApp extends StatelessWidget {
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: Colors.white,
-        selectedItemColor: Colors.green[800],
+        selectedItemColor: const Color(0xFF1A365D),
         unselectedItemColor: Colors.grey[600],
         type: BottomNavigationBarType.fixed,
       ),
@@ -110,9 +125,9 @@ class TeaWeigherApp extends StatelessWidget {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.0),
-          borderSide: BorderSide(color: Colors.green[800]!, width: 2.0),
+          borderSide: const BorderSide(color: Color(0xFF1A365D), width: 2.0),
         ),
-        labelStyle: TextStyle(color: Colors.green[800]),
+        labelStyle: const TextStyle(color: Color(0xFF1A365D)),
         prefixIconColor: Colors.grey[600],
       ),
     );
@@ -120,10 +135,10 @@ class TeaWeigherApp extends StatelessWidget {
 
   ThemeData _buildDarkTheme() {
     return ThemeData.dark().copyWith(
-      primaryColor: Colors.green[300],
-      scaffoldBackgroundColor: const Color(0xFF121212),
+      primaryColor: const Color(0xFF4A90E2),
+      scaffoldBackgroundColor: const Color(0xFF1A202C),
       appBarTheme: AppBarTheme(
-        backgroundColor: Colors.green[700],
+        backgroundColor: const Color(0xFF2D3748),
         elevation: 4,
         titleTextStyle: const TextStyle(
           color: Colors.white,
@@ -134,15 +149,15 @@ class TeaWeigherApp extends StatelessWidget {
       ),
       cardTheme: CardThemeData(
         elevation: 2,
-        color: Colors.grey[800],
+        color: const Color(0xFF374151),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.0),
         ),
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFFFF9800),
-          foregroundColor: Colors.black,
+          backgroundColor: const Color(0xFF8B4513),
+          foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.0),
           ),
@@ -150,8 +165,8 @@ class TeaWeigherApp extends StatelessWidget {
         ),
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        backgroundColor: Colors.grey[900],
-        selectedItemColor: Colors.green[300],
+        backgroundColor: const Color(0xFF2D3748),
+        selectedItemColor: const Color(0xFF4A90E2),
         unselectedItemColor: Colors.grey[400],
         type: BottomNavigationBarType.fixed,
       ),
@@ -162,9 +177,9 @@ class TeaWeigherApp extends StatelessWidget {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.0),
-          borderSide: BorderSide(color: Colors.green[300]!, width: 2.0),
+          borderSide: const BorderSide(color: Color(0xFF4A90E2), width: 2.0),
         ),
-        labelStyle: TextStyle(color: Colors.green[300]),
+        labelStyle: const TextStyle(color: Color(0xFF4A90E2)),
         prefixIconColor: Colors.grey[400],
       ),
     );

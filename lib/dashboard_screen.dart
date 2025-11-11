@@ -212,7 +212,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   value: '${_topFarmerWeight.toStringAsFixed(1)} kg',
                   subtitle: '$farmerName (ID: $_topFarmerId)',
                   icon: Icons.person,
-                  color: Colors.blue,
+                  color: AppTheme.accentGrey(context),
                 );
               },
             ),
@@ -277,16 +277,16 @@ class _StatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 170,
+      height: 200,
       child: Card(
         color: color,
         child: Padding(
-          padding: const EdgeInsets.all(14.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(icon, size: 28, color: Colors.white),
-              const SizedBox(height: 8),
+              Icon(icon, size: 32, color: Colors.white),
+              const SizedBox(height: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -295,24 +295,24 @@ class _StatCard extends StatelessWidget {
                     Text(
                       value,
                       style: const TextStyle(
-                        fontSize: 22,
+                        fontSize: 24,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: 4),
                     Text(
                       title,
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 16,
                         color: Colors.white.withOpacity(0.9),
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: 4),
                     Text(
                       subtitle,
                       style: TextStyle(
-                        fontSize: 11,
+                        fontSize: 12,
                         color: Colors.white.withOpacity(0.7),
                       ),
                       maxLines: 2,
