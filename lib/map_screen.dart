@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'dart:async';
+import '../main.dart'; // To use AppTheme
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -12,14 +11,8 @@ class MapScreen extends StatefulWidget {
 }
 
 class MapScreenState extends State<MapScreen> {
-  final Completer<GoogleMapController> _controller = Completer();
   final DatabaseReference _databaseRef = FirebaseDatabase.instance.ref(
     '/latest_reading',
-  );
-
-  static const CameraPosition _defaultLocation = CameraPosition(
-    target: LatLng(6.9271, 79.8612), // Default to Colombo, Sri Lanka
-    zoom: 14.0,
   );
 
   @override
@@ -82,40 +75,61 @@ class MapScreenState extends State<MapScreen> {
         double lat = gpsData['latitude']?.toDouble() ?? 6.9271;
         double lon = gpsData['longitude']?.toDouble() ?? 79.8612;
 
-        LatLng currentPosition = LatLng(lat, lon);
-
-        // Update camera to new position
-        _moveCamera(currentPosition);
-
-        return GoogleMap(
-          mapType: MapType.hybrid,
-          initialCameraPosition: _defaultLocation,
-          onMapCreated: (GoogleMapController controller) {
-            _controller.complete(controller);
-          },
-          markers: {
-            // The single marker for the latest reading
-            Marker(
-              markerId: const MarkerId('latest_reading'),
-              position: currentPosition,
-              infoWindow: InfoWindow(
-                title: 'Last Weigh-in',
-                snippet: 'Farmer: ${data['farmer_id']}',
+        return Center(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Card(
+              color: AppTheme.cardColor(context),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'GPS Location Data',
+                      style: TextStyle(
+                        color: AppTheme.textColor(context),
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Latitude: $lat',
+                      style: TextStyle(
+                        color: AppTheme.textColor(context),
+                        fontSize: 16,
+                      ),
+                    ),
+                    Text(
+                      'Longitude: $lon',
+                      style: TextStyle(
+                        color: AppTheme.textColor(context),
+                        fontSize: 16,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Farmer ID: ${data['farmer_id'] ?? 'Unknown'}',
+                      style: TextStyle(
+                        color: AppTheme.textColor(context),
+                        fontSize: 16,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Note: Google Maps integration removed for web compatibility. '
+                      'Add flutter_map package for map visualization.',
+                      style: TextStyle(color: Colors.grey[600], fontSize: 14),
+                    ),
+                  ],
+                ),
               ),
             ),
-          },
+          ),
         );
       },
-    );
-  }
-
-  // Function to animate camera to new position
-  Future<void> _moveCamera(LatLng position) async {
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(
-      CameraUpdate.newCameraPosition(
-        CameraPosition(target: position, zoom: 16.0),
-      ),
     );
   }
 }
