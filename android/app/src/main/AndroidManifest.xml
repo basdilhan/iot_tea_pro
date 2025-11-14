@@ -1,4 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <application
         android:label="iot_tea"
         android:name="${applicationName}"
@@ -21,7 +23,7 @@
               android:resource="@style/NormalTheme"
               />
               <meta-data android:name="com.google.android.geo.API_KEY"
-           android:value="*"/>
+           android:value="AIzaSyD7hMrSmv-pjWNskK2nAH4ddPkfYFMMVJ0"/>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

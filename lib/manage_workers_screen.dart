@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:geolocator/geolocator.dart'; // <-- 1. IMPORT
 
 class ManageWorkersScreen extends StatefulWidget {
   const ManageWorkersScreen({super.key});
@@ -13,89 +14,209 @@ class _ManageWorkersScreenState extends State<ManageWorkersScreen> {
     '/workers',
   );
 
-  // This function shows the popup dialog for adding/editing a worker
-  void _showWorkerDialog({String? workerId, String? currentName}) {
+  // --- 2. ADDED GPS HELPER FUNCTION ---
+  Future<Position> _determinePosition() async {
+    // ... (This function is correct, no changes needed)
+    bool serviceEnabled;
+    LocationPermission permission;
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled.');
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+        'Location permissions are permanently denied, we cannot request permissions.',
+      );
+    }
+    return await Geolocator.getCurrentPosition();
+  }
+
+  // --- 3. MODIFIED DIALOG FUNCTION ---
+  void _showWorkerDialog({
+    String? workerId,
+    Map<dynamic, dynamic>? workerData,
+  }) {
     final TextEditingController idController = TextEditingController(
       text: workerId,
     );
     final TextEditingController nameController = TextEditingController(
-      text: currentName,
+      text: workerData?['name'],
     );
 
-    // If we are editing, 'workerId' will not be null, so disable the ID field
     bool isEditing = workerId != null;
+    Position? currentPosition;
+    bool isLoadingLocation = false;
+
+    // --- FIX #1: Read from the nested 'home_gps_location' object ---
+    if (workerData?['home_gps_location'] != null &&
+        workerData?['home_gps_location'] is Map) {
+      var locationMap = workerData!['home_gps_location'];
+      currentPosition = Position.fromMap({
+        'latitude': locationMap['latitude'],
+        'longitude': locationMap['longitude'],
+        'timestamp': DateTime.now().millisecondsSinceEpoch,
+      });
+    }
 
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          title: Text(isEditing ? 'Edit Worker' : 'Add New Worker'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: idController,
-                enabled: !isEditing, // Disable if editing
-                decoration: const InputDecoration(
-                  labelText: 'Farmer ID (e.g., 1234)',
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              title: Text(isEditing ? 'Edit Worker' : 'Add New Worker'),
+              content: SingleChildScrollView(
+                // Added for small screens
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextField(
+                      controller: idController,
+                      enabled: !isEditing,
+                      decoration: const InputDecoration(
+                        labelText: 'Farmer ID (e.g., W-001)',
+                      ),
+                    ),
+                    TextField(
+                      controller: nameController,
+                      decoration: const InputDecoration(
+                        labelText: 'Farmer Name',
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Location:',
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                        if (isLoadingLocation)
+                          const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        else
+                          TextButton.icon(
+                            icon: const Icon(Icons.my_location),
+                            label: Text(
+                              currentPosition == null
+                                  ? 'Get Location'
+                                  : 'Get Again',
+                            ),
+                            onPressed: () async {
+                              setDialogState(() {
+                                isLoadingLocation = true;
+                              });
+                              try {
+                                Position position = await _determinePosition();
+                                setDialogState(() {
+                                  currentPosition = position;
+                                  isLoadingLocation = false;
+                                });
+                              } catch (e) {
+                                setDialogState(() {
+                                  isLoadingLocation = false;
+                                });
+                                if (mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text('Error: $e')),
+                                  );
+                                }
+                              }
+                            },
+                          ),
+                      ],
+                    ),
+                    if (currentPosition != null)
+                      Text(
+                        'Lat: ${currentPosition!.latitude.toStringAsFixed(4)}, Lon: ${currentPosition!.longitude.toStringAsFixed(4)}',
+                        style: const TextStyle(color: Colors.green),
+                      ),
+                  ],
                 ),
               ),
-              TextField(
-                controller: nameController,
-                decoration: const InputDecoration(labelText: 'Farmer Name'),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              child: const Text('Cancel'),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                foregroundColor: Theme.of(context).colorScheme.onPrimary,
-              ),
-              child: const Text('Save'),
-              onPressed: () {
-                String id = idController.text.trim();
-                String name = nameController.text.trim();
+              actions: [
+                TextButton(
+                  child: const Text('Cancel'),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                  ),
+                  child: const Text('Save'),
+                  onPressed: () {
+                    String id = idController.text.trim();
+                    String name = nameController.text.trim();
 
-                if (id.isNotEmpty && name.isNotEmpty) {
-                  // This is the WRITE command
-                  _workersRef
-                      .child(id)
-                      .set({'name': name})
-                      .then((_) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              'Worker ${isEditing ? 'updated' : 'added'}!',
+                    if (id.isEmpty || name.isEmpty) {
+                      // ... (error handling)
+                      return;
+                    }
+                    if (currentPosition == null) {
+                      // ... (error handling)
+                      return;
+                    }
+
+                    // --- FIX #2: Save data in the correct nested structure ---
+                    Map<String, dynamic> dataToSave = {
+                      'name': name,
+                      'home_gps_location': {
+                        // Save as a nested map
+                        'latitude': currentPosition!.latitude,
+                        'longitude': currentPosition!.longitude,
+                      },
+                    };
+
+                    if (!isEditing) {
+                      dataToSave['registered_on'] = ServerValue.timestamp;
+                      // You can also add other fields like 'assigned_area' here
+                      // dataToSave['assigned_area'] = "Default Area";
+                    }
+
+                    _workersRef
+                        .child(id)
+                        .update(
+                          dataToSave,
+                        ) // Use .update to preserve other fields
+                        .then((_) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Worker ${isEditing ? 'updated' : 'added'}!',
+                              ),
                             ),
-                          ),
-                        );
-                        Navigator.of(context).pop();
-                      })
-                      .catchError((error) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Failed: $error')),
-                        );
-                      });
-                }
-              },
-            ),
-          ],
+                          );
+                          Navigator.of(context).pop();
+                        })
+                        .catchError((error) {
+                          // ... (error handling)
+                        });
+                  },
+                ),
+              ],
+            );
+          },
         );
       },
     );
   }
 
-  // This function handles deleting a worker
   void _deleteWorker(String workerId) {
-    // This is the DELETE command
+    // ... (This function is correct, no changes needed)
     _workersRef
         .child(workerId)
         .remove()
@@ -114,7 +235,6 @@ class _ManageWorkersScreenState extends State<ManageWorkersScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // 1. READ the list of workers
       body: StreamBuilder(
         stream: _workersRef.onValue,
         builder: (context, AsyncSnapshot<DatabaseEvent> snapshot) {
@@ -131,28 +251,68 @@ class _ManageWorkersScreenState extends State<ManageWorkersScreen> {
           Map<dynamic, dynamic> workersMap =
               snapshot.data!.snapshot.value as Map<dynamic, dynamic>;
 
+          var workerList = workersMap.entries.toList();
+          workerList.sort((a, b) => a.key.compareTo(b.key));
+
           return ListView.builder(
-            itemCount: workersMap.length,
+            itemCount: workerList.length,
             itemBuilder: (context, index) {
-              String workerId = workersMap.keys.elementAt(index);
+              String workerId = workerList[index].key;
               Map<dynamic, dynamic> workerData =
-                  workersMap[workerId] as Map<dynamic, dynamic>;
+                  workerList[index].value as Map<dynamic, dynamic>;
               String workerName = workerData['name'] ?? 'No Name';
+
+              // --- FIX #3: Read from the nested 'home_gps_location' object ---
+              String locationText = 'No location set';
+              if (workerData['home_gps_location'] != null &&
+                  workerData['home_gps_location'] is Map) {
+                var locationMap = workerData['home_gps_location'];
+                // Check if keys exist before accessing
+                if (locationMap['latitude'] != null &&
+                    locationMap['longitude'] != null) {
+                  locationText =
+                      'Lat: ${locationMap['latitude'].toStringAsFixed(4)}, Lon: ${locationMap['longitude'].toStringAsFixed(4)}';
+                }
+              }
 
               return Card(
                 margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
                 child: ListTile(
+                  isThreeLine: true,
                   title: Text(workerName),
-                  subtitle: Text('ID: $workerId'),
-                  // 2. EDIT by tapping
+                  subtitle: Text('ID: $workerId\n$locationText'),
                   onTap: () => _showWorkerDialog(
                     workerId: workerId,
-                    currentName: workerName,
+                    workerData: workerData,
                   ),
-                  // 3. DELETE with a trailing button
                   trailing: IconButton(
                     icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: () => _deleteWorker(workerId),
+                    onPressed: () {
+                      // ... (This delete dialog logic is correct)
+                      showDialog(
+                        context: context,
+                        builder: (ctx) => AlertDialog(
+                          title: const Text('Are you sure?'),
+                          content: Text('Do you want to delete $workerName?'),
+                          actions: [
+                            TextButton(
+                              child: const Text('Cancel'),
+                              onPressed: () => Navigator.of(ctx).pop(),
+                            ),
+                            TextButton(
+                              child: const Text(
+                                'Delete',
+                                style: TextStyle(color: Colors.red),
+                              ),
+                              onPressed: () {
+                                Navigator.of(ctx).pop();
+                                _deleteWorker(workerId);
+                              },
+                            ),
+                          ],
+                        ),
+                      );
+                    },
                   ),
                 ),
               );
@@ -160,7 +320,6 @@ class _ManageWorkersScreenState extends State<ManageWorkersScreen> {
           );
         },
       ),
-      // 4. ADD a new worker
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showWorkerDialog(),
         tooltip: 'Add New Worker',

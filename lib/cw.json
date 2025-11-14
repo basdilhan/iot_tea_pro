@@ -1,53 +1,195 @@
 {
-  "latest_reading": {
-    "farmer_id": "1234",
-    "device_id": "scale_01",
-    "gps_location": {
-      "latitude": 6.9271,
-      "longitude": 79.8612
+  "devices": {
+    "scale_01": {
+      "location_name": "Estate Block A"
     },
-    "timestamp": 1678886400,
+    "scale_02": {
+      "location_name": "Estate Block B"
+    }
+  },
+  "latest_reading": {
+    "device_id": "scale_02",
+    "farmer_id": "1234",
+    "gps_location": {
+      "latitude": 6.928,
+      "longitude": 79.862
+    },
+    "timestamp": 1699612800,
     "unit": "kg",
-    "weight": 12.5
+    "weight": 22.1
   },
   "weighing_logs": {
-    "2025-11-09": {
-      "-Logs_ID_001": {
+    "2025-11-01": {
+      "-Logs_ID_004": {
+        "device_id": "scale_01",
         "farmer_id": "1234",
-        "device_id": "scale_01",
-        "timestamp": 1678886400,
+        "timestamp": 1698829200,
         "unit": "kg",
-        "weight": 12.5
+        "weight": 14.2
       },
-      "-Logs_ID_002": {
-        "farmer_id": "5678",
+      "-Logs_ID_005": {
         "device_id": "scale_01",
-        "timestamp": 1678886900,
+        "farmer_id": "5678",
+        "timestamp": 1698831000,
         "unit": "kg",
-        "weight": 15.2
+        "weight": 21.8
+      }
+    },
+    "2025-11-02": {
+      "-Logs_ID_006": {
+        "device_id": "scale_02",
+        "farmer_id": "9012",
+        "timestamp": 1698915600,
+        "unit": "kg",
+        "weight": 18.1
+      }
+    },
+    "2025-11-03": {
+      "-Logs_ID_007": {
+        "device_id": "scale_01",
+        "farmer_id": "1234",
+        "timestamp": 1699002000,
+        "unit": "kg",
+        "weight": 12
+      },
+      "-Logs_ID_008": {
+        "device_id": "scale_02",
+        "farmer_id": "5678",
+        "timestamp": 1699003800,
+        "unit": "kg",
+        "weight": 25.5
+      },
+      "-Logs_ID_009": {
+        "device_id": "scale_01",
+        "farmer_id": "9012",
+        "timestamp": 1699005600,
+        "unit": "kg",
+        "weight": 19.3
+      }
+    },
+    "2025-11-04": {
+      "-Logs_ID_010": {
+        "device_id": "scale_02",
+        "farmer_id": "1234",
+        "timestamp": 1699088400,
+        "unit": "kg",
+        "weight": 17.6
+      }
+    },
+    "2025-11-05": {
+      "-Logs_ID_011": {
+        "device_id": "scale_01",
+        "farmer_id": "5678",
+        "timestamp": 1699174800,
+        "unit": "kg",
+        "weight": 20.2
+      },
+      "-Logs_ID_012": {
+        "device_id": "scale_01",
+        "farmer_id": "9012",
+        "timestamp": 1699176600,
+        "unit": "kg",
+        "weight": 11.9
+      }
+    },
+    "2025-11-06": {
+      "-Logs_ID_013": {
+        "device_id": "scale_01",
+        "farmer_id": "1234",
+        "timestamp": 1699261200,
+        "unit": "kg",
+        "weight": 28.1
+      },
+      "-Logs_ID_014": {
+        "device_id": "scale_02",
+        "farmer_id": "5678",
+        "timestamp": 1699263000,
+        "unit": "kg",
+        "weight": 14.7
+      }
+    },
+    "2025-11-07": {
+      "-Logs_ID_015": {
+        "device_id": "scale_02",
+        "farmer_id": "9012",
+        "timestamp": 1699347600,
+        "unit": "kg",
+        "weight": 23
+      },
+      "-Logs_ID_016": {
+        "device_id": "scale_01",
+        "farmer_id": "1234",
+        "timestamp": 1699349400,
+        "unit": "kg",
+        "weight": 15.8
       }
     },
     "2025-11-08": {
-      "-Logs_ID_003": {
-        "farmer_id": "1234",
+      "-Logs_ID_017": {
         "device_id": "scale_01",
-        "timestamp": 1678880000,
+        "farmer_id": "5678",
+        "timestamp": 1699434000,
         "unit": "kg",
-        "weight": 20.1
+        "weight": 19.5
+      }
+    },
+    "2025-11-09": {
+      "-Logs_ID_018": {
+        "device_id": "scale_01",
+        "farmer_id": "9012",
+        "timestamp": 1699520400,
+        "unit": "kg",
+        "weight": 20.8
+      },
+      "-Logs_ID_019": {
+        "device_id": "scale_02",
+        "farmer_id": "1234",
+        "timestamp": 1699522200,
+        "unit": "kg",
+        "weight": 13.4
+      }
+    },
+    "2025-11-10": {
+      "-Logs_ID_020": {
+        "device_id": "scale_01",
+        "farmer_id": "5678",
+        "timestamp": 1699606800,
+        "unit": "kg",
+        "weight": 16.7
+      },
+      "-Logs_ID_021": {
+        "device_id": "scale_02",
+        "farmer_id": "1234",
+        "timestamp": 1699608600,
+        "unit": "kg",
+        "weight": 22.1
       }
     }
   },
   "workers": {
     "1234": {
+      "assigned_area": "Estate Block A",
+      "home_gps_location": {
+        "latitude": 6.0535,
+        "longitude": 80.221
+      },
       "name": "Nimal Perera"
     },
     "5678": {
+      "assigned_area": "Estate Block B",
+      "home_gps_location": {
+        "latitude": 5.9485,
+        "longitude": 80.5353
+      },
       "name": "Sunitha Silva"
-    }
-  },
-  "devices": {
-    "scale_01": {
-      "location_name": "Estate Block A"
+    },
+    "9012": {
+      "assigned_Carea": "Estate Block A",
+      "home_gps_location": {
+        "latitude": 7.2906,
+        "longitude": 80.6337
+      },
+      "name": "Kamal Fernando"
     }
   }
 }
