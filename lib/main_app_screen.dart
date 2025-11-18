@@ -1,16 +1,19 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:iot_tea/dashboard_screen.dart';
 import 'package:iot_tea/log_list_screen.dart';
 import 'package:iot_tea/manage_workers_screen.dart';
 import 'package:iot_tea/map_screen.dart';
 import 'package:iot_tea/reports_screen.dart';
 import 'package:iot_tea/smart_weigning_screen.dart';
+import 'package:iot_tea/payment_settings_screen.dart';
+// import 'package:iot_tea/onboarding_screen.dart';
 import 'theme_provider.dart';
 
 class MainAppScreen extends StatefulWidget {
-  const MainAppScreen({Key? key}) : super(key: key);
+  const MainAppScreen({super.key});
 
   @override
   State<MainAppScreen> createState() => _MainAppScreenState();
@@ -57,6 +60,9 @@ class _MainAppScreenState extends State<MainAppScreen> {
 
   Future<void> _signOut() async {
     try {
+      // Reset onboarding flag before signing out
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('onboarding_completed', false);
       await FirebaseAuth.instance.signOut();
     } catch (e) {
       if (mounted) {
@@ -88,6 +94,30 @@ class _MainAppScreenState extends State<MainAppScreen> {
                 },
               );
             },
+          ),
+          // Payment Settings Button
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.settings),
+            tooltip: 'Settings',
+            onSelected: (value) {
+              if (value == 'payment') {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const PaymentSettingsScreen(),
+                  ),
+                );
+              }
+            },
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+              const PopupMenuItem<String>(
+                value: 'payment',
+                child: ListTile(
+                  leading: Icon(Icons.payments),
+                  title: Text('Payment Settings'),
+                  contentPadding: EdgeInsets.zero,
+                ),
+              ),
+            ],
           ),
           // Sign Out Button
           IconButton(

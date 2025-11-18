@@ -49,6 +49,7 @@ class _ManageWorkersScreenState extends State<ManageWorkersScreen> {
     final TextEditingController nameController = TextEditingController(
       text: workerData?['name'],
     );
+    // Phone number field removed (SMS feature deferred)
 
     bool isEditing = workerId != null;
     Position? currentPosition;
@@ -93,6 +94,7 @@ class _ManageWorkersScreenState extends State<ManageWorkersScreen> {
                         labelText: 'Farmer Name',
                       ),
                     ),
+                    // Phone number input removed
                     const SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -161,13 +163,22 @@ class _ManageWorkersScreenState extends State<ManageWorkersScreen> {
                   onPressed: () {
                     String id = idController.text.trim();
                     String name = nameController.text.trim();
+                    // Phone field removed
 
                     if (id.isEmpty || name.isEmpty) {
-                      // ... (error handling)
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('ID and Name are required!'),
+                        ),
+                      );
                       return;
                     }
                     if (currentPosition == null) {
-                      // ... (error handling)
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Please get GPS location!'),
+                        ),
+                      );
                       return;
                     }
 
@@ -261,6 +272,7 @@ class _ManageWorkersScreenState extends State<ManageWorkersScreen> {
               Map<dynamic, dynamic> workerData =
                   workerList[index].value as Map<dynamic, dynamic>;
               String workerName = workerData['name'] ?? 'No Name';
+              String phone = workerData['phone'] ?? 'No phone';
 
               // --- FIX #3: Read from the nested 'home_gps_location' object ---
               String locationText = 'No location set';
@@ -280,7 +292,7 @@ class _ManageWorkersScreenState extends State<ManageWorkersScreen> {
                 child: ListTile(
                   isThreeLine: true,
                   title: Text(workerName),
-                  subtitle: Text('ID: $workerId\n$locationText'),
+                  subtitle: Text('ID: $workerId\nPhone: $phone\n$locationText'),
                   onTap: () => _showWorkerDialog(
                     workerId: workerId,
                     workerData: workerData,
