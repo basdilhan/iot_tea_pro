@@ -34,10 +34,29 @@
     Google Maps JavaScript API - Replace YOUR_API_KEY with your actual API key
     For development/testing, you can use a placeholder or remove this line
   -->
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAVgrbuweWa93expzY5oS237rrqMZTwtUs"></script> 
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAVgrbuweWa93expzY5oS237rrqMZTwtUs"></script>
+
+  <!-- Firebase reCAPTCHA configuration for Phone Authentication on Web -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
+  <script>
+    // Initialize reCAPTCHA for Firebase Phone Auth
+    window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+      'size': 'invisible',
+      'callback': function(token) {
+        // Handle reCAPTCHA token
+      },
+      'expired-callback': function() {
+        // Handle reCAPTCHA expiration
+      }
+    });
+  </script>
 
 </head>
 <body>
+  <!-- Container for reCAPTCHA -->
+  <div id="recaptcha-container"></div>
+  
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>

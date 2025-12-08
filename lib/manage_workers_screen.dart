@@ -49,7 +49,9 @@ class _ManageWorkersScreenState extends State<ManageWorkersScreen> {
     final TextEditingController nameController = TextEditingController(
       text: workerData?['name'],
     );
-    // Phone number field removed (SMS feature deferred)
+    final TextEditingController phoneController = TextEditingController(
+      text: workerData?['phone_number'] ?? workerData?['phone'],
+    );
 
     bool isEditing = workerId != null;
     Position? currentPosition;
@@ -94,7 +96,14 @@ class _ManageWorkersScreenState extends State<ManageWorkersScreen> {
                         labelText: 'Farmer Name',
                       ),
                     ),
-                    // Phone number input removed
+                    TextField(
+                      controller: phoneController,
+                      keyboardType: TextInputType.phone,
+                      decoration: const InputDecoration(
+                        labelText: 'Phone Number (+94XXXXXXXXX)',
+                        hintText: '+9477XXXXXXX',
+                      ),
+                    ),
                     const SizedBox(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -131,11 +140,10 @@ class _ManageWorkersScreenState extends State<ManageWorkersScreen> {
                                 setDialogState(() {
                                   isLoadingLocation = false;
                                 });
-                                if (mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text('Error: $e')),
-                                  );
-                                }
+                                final messenger = ScaffoldMessenger.of(context);
+                                messenger.showSnackBar(
+                                  SnackBar(content: Text('Error: $e')),
+                                );
                               }
                             },
                           ),
@@ -163,12 +171,22 @@ class _ManageWorkersScreenState extends State<ManageWorkersScreen> {
                   onPressed: () {
                     String id = idController.text.trim();
                     String name = nameController.text.trim();
-                    // Phone field removed
+                    String phone = phoneController.text.trim();
 
                     if (id.isEmpty || name.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('ID and Name are required!'),
+                        ),
+                      );
+                      return;
+                    }
+                    if (phone.isEmpty || !phone.startsWith('+')) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Valid E.164 phone (e.g., +9477...) required',
+                          ),
                         ),
                       );
                       return;
@@ -185,6 +203,7 @@ class _ManageWorkersScreenState extends State<ManageWorkersScreen> {
                     // --- FIX #2: Save data in the correct nested structure ---
                     Map<String, dynamic> dataToSave = {
                       'name': name,
+                      'phone_number': phone,
                       'home_gps_location': {
                         // Save as a nested map
                         'latitude': currentPosition!.latitude,
@@ -198,23 +217,27 @@ class _ManageWorkersScreenState extends State<ManageWorkersScreen> {
                       // dataToSave['assigned_area'] = "Default Area";
                     }
 
+                    final navigator = Navigator.of(context);
+                    final messenger = ScaffoldMessenger.of(context);
                     _workersRef
                         .child(id)
                         .update(
                           dataToSave,
                         ) // Use .update to preserve other fields
                         .then((_) {
-                          ScaffoldMessenger.of(context).showSnackBar(
+                          messenger.showSnackBar(
                             SnackBar(
                               content: Text(
                                 'Worker ${isEditing ? 'updated' : 'added'}!',
                               ),
                             ),
                           );
-                          Navigator.of(context).pop();
+                          navigator.pop();
                         })
                         .catchError((error) {
-                          // ... (error handling)
+                          messenger.showSnackBar(
+                            SnackBar(content: Text('Failed to save: $error')),
+                          );
                         });
                   },
                 ),
@@ -227,19 +250,19 @@ class _ManageWorkersScreenState extends State<ManageWorkersScreen> {
   }
 
   void _deleteWorker(String workerId) {
-    // ... (This function is correct, no changes needed)
+    final messenger = ScaffoldMessenger.of(context);
     _workersRef
         .child(workerId)
         .remove()
         .then((_) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('Worker deleted!')));
+          messenger.showSnackBar(
+            const SnackBar(content: Text('Worker deleted!')),
+          );
         })
         .catchError((error) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Failed to delete: $error')));
+          messenger.showSnackBar(
+            SnackBar(content: Text('Failed to delete: $error')),
+          );
         });
   }
 
@@ -272,7 +295,10 @@ class _ManageWorkersScreenState extends State<ManageWorkersScreen> {
               Map<dynamic, dynamic> workerData =
                   workerList[index].value as Map<dynamic, dynamic>;
               String workerName = workerData['name'] ?? 'No Name';
-              String phone = workerData['phone'] ?? 'No phone';
+              String phone =
+                  workerData['phone_number'] ??
+                  workerData['phone'] ??
+                  'No phone';
 
               // --- FIX #3: Read from the nested 'home_gps_location' object ---
               String locationText = 'No location set';

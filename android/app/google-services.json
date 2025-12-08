@@ -10,10 +10,19 @@
       "client_info": {
         "mobilesdk_app_id": "1:120562347171:android:379936cf91d3e340222316",
         "android_client_info": {
-          "package_name": "com.example.iot_tea"
+          "package_name": "com.example.iot_tea",
+          "certificate_hash": [
+            "6f:af:5f:64:4c:9c:8a:eb:6e:ea:e0:5f:9e:0d:af:2b:e3:af:d5:90",
+            "a5:73:db:1a:d2:6e:89:0d:4b:d9:95:08:6c:c6:20:c8:ac:4d:da:eb:e0:f3:7e:15:82:6e:84:5a:15:e0:b9:61"
+          ]
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "120562347171-rvcvnigv98q7vtjep7t57fs1madmdhd4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyD7hMrSmv-pjWNskK2nAH4ddPkfYFMMVJ0"
@@ -21,7 +30,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "120562347171-rvcvnigv98q7vtjep7t57fs1madmdhd4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "120562347171-fkntge20vrt9343jvqfsnscsbn1jhrii.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.iotTea"
+              }
+            }
+          ]
         }
       }
     }

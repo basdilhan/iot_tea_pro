@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'login_screen.dart';
 import 'main_app_screen.dart';
 import 'onboarding_screen.dart';
+import 'role_selection_screen.dart';
 
 class AuthWrapper extends StatefulWidget {
   const AuthWrapper({super.key});
@@ -56,7 +56,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
           return const MainAppScreen();
         }
         // User is not logged in
-        return const LoginScreen();
+        return const RoleSelectionScreen();
       },
     );
   }

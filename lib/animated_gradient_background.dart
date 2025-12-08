@@ -32,18 +32,18 @@ class _AnimatedGradientBackgroundState extends State<AnimatedGradientBackground>
 
       // Create three color animations that blend together
       _colorAnimation1 = ColorTween(
-        begin: primary.withOpacity(0.3),
-        end: secondary.withOpacity(0.3),
+        begin: primary.withAlpha((0.3 * 255).round()),
+        end: secondary.withAlpha((0.3 * 255).round()),
       ).animate(_controller);
 
       _colorAnimation2 = ColorTween(
-        begin: secondary.withOpacity(0.1),
-        end: surface.withOpacity(0.05),
+        begin: secondary.withAlpha((0.1 * 255).round()),
+        end: surface.withAlpha((0.05 * 255).round()),
       ).animate(_controller);
 
       _colorAnimation3 = ColorTween(
-        begin: surface.withOpacity(0.05),
-        end: primary.withOpacity(0.1),
+        begin: surface.withAlpha((0.05 * 255).round()),
+        end: primary.withAlpha((0.1 * 255).round()),
       ).animate(_controller);
 
       _isInitialized = true;

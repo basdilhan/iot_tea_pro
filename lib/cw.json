@@ -1,195 +1,269 @@
 {
-  "devices": {
-    "scale_01": {
-      "location_name": "Estate Block A"
-    },
-    "scale_02": {
-      "location_name": "Estate Block B"
-    }
-  },
   "latest_reading": {
-    "device_id": "scale_02",
+    "device_id": "scale_01",
     "farmer_id": "1234",
-    "gps_location": {
-      "latitude": 6.928,
-      "longitude": 79.862
-    },
-    "timestamp": 1699612800,
+    "timestamp": 1764327600,
     "unit": "kg",
-    "weight": 22.1
+    "weight": 18.5
   },
   "weighing_logs": {
     "2025-11-01": {
-      "-Logs_ID_004": {
-        "device_id": "scale_01",
-        "farmer_id": "1234",
-        "timestamp": 1698829200,
-        "unit": "kg",
-        "weight": 14.2
-      },
-      "-Logs_ID_005": {
-        "device_id": "scale_01",
-        "farmer_id": "5678",
-        "timestamp": 1698831000,
-        "unit": "kg",
-        "weight": 21.8
-      }
+      "-Logs_ID_001": { "device_id": "scale_01", "farmer_id": "1234", "timestamp": 1761966000, "unit": "kg", "weight": 14.2 },
+      "-Logs_ID_002": { "device_id": "scale_01", "farmer_id": "5678", "timestamp": 1761969600, "unit": "kg", "weight": 21.8 },
+      "-Logs_ID_001_ex1": { "device_id": "scale_01", "farmer_id": "9012", "timestamp": 1761973200, "unit": "kg", "weight": 18.5 },
+      "-Logs_ID_001_ex2": { "device_id": "scale_01", "farmer_id": "3456", "timestamp": 1761976800, "unit": "kg", "weight": 22.1 }
     },
     "2025-11-02": {
-      "-Logs_ID_006": {
-        "device_id": "scale_02",
-        "farmer_id": "9012",
-        "timestamp": 1698915600,
-        "unit": "kg",
-        "weight": 18.1
-      }
+      "-Logs_ID_003": { "device_id": "scale_01", "farmer_id": "9012", "timestamp": 1762052400, "unit": "kg", "weight": 18.1 },
+      "-Logs_ID_004": { "device_id": "scale_01", "farmer_id": "3456", "timestamp": 1762056000, "unit": "kg", "weight": 15.5 },
+      "-Logs_ID_003_ex1": { "device_id": "scale_01", "farmer_id": "1234", "timestamp": 1762059600, "unit": "kg", "weight": 13.9 },
+      "-Logs_ID_003_ex2": { "device_id": "scale_01", "farmer_id": "5678", "timestamp": 1762063200, "unit": "kg", "weight": 24.0 }
     },
     "2025-11-03": {
-      "-Logs_ID_007": {
-        "device_id": "scale_01",
-        "farmer_id": "1234",
-        "timestamp": 1699002000,
-        "unit": "kg",
-        "weight": 12
-      },
-      "-Logs_ID_008": {
-        "device_id": "scale_02",
-        "farmer_id": "5678",
-        "timestamp": 1699003800,
-        "unit": "kg",
-        "weight": 25.5
-      },
-      "-Logs_ID_009": {
-        "device_id": "scale_01",
-        "farmer_id": "9012",
-        "timestamp": 1699005600,
-        "unit": "kg",
-        "weight": 19.3
-      }
+      "-Logs_ID_005": { "device_id": "scale_01", "farmer_id": "1234", "timestamp": 1762138800, "unit": "kg", "weight": 12.0 },
+      "-Logs_ID_006": { "device_id": "scale_01", "farmer_id": "5678", "timestamp": 1762142400, "unit": "kg", "weight": 25.5 },
+      "-Logs_ID_005_ex1": { "device_id": "scale_01", "farmer_id": "3456", "timestamp": 1762146000, "unit": "kg", "weight": 19.8 },
+      "-Logs_ID_005_ex2": { "device_id": "scale_01", "farmer_id": "9012", "timestamp": 1762149600, "unit": "kg", "weight": 16.4 }
     },
     "2025-11-04": {
-      "-Logs_ID_010": {
-        "device_id": "scale_02",
-        "farmer_id": "1234",
-        "timestamp": 1699088400,
-        "unit": "kg",
-        "weight": 17.6
-      }
+      "-Logs_ID_007": { "device_id": "scale_01", "farmer_id": "9012", "timestamp": 1762225200, "unit": "kg", "weight": 19.3 },
+      "-Logs_ID_008": { "device_id": "scale_01", "farmer_id": "1234", "timestamp": 1762228800, "unit": "kg", "weight": 17.6 },
+      "-Logs_ID_007_ex1": { "device_id": "scale_01", "farmer_id": "5678", "timestamp": 1762232400, "unit": "kg", "weight": 21.2 },
+      "-Logs_ID_007_ex2": { "device_id": "scale_01", "farmer_id": "3456", "timestamp": 1762236000, "unit": "kg", "weight": 14.5 }
     },
     "2025-11-05": {
-      "-Logs_ID_011": {
-        "device_id": "scale_01",
-        "farmer_id": "5678",
-        "timestamp": 1699174800,
-        "unit": "kg",
-        "weight": 20.2
-      },
-      "-Logs_ID_012": {
-        "device_id": "scale_01",
-        "farmer_id": "9012",
-        "timestamp": 1699176600,
-        "unit": "kg",
-        "weight": 11.9
-      }
+      "-Logs_ID_009": { "device_id": "scale_01", "farmer_id": "5678", "timestamp": 1762311600, "unit": "kg", "weight": 20.2 },
+      "-Logs_ID_010": { "device_id": "scale_01", "farmer_id": "3456", "timestamp": 1762315200, "unit": "kg", "weight": 22.1 },
+      "-Logs_ID_009_ex1": { "device_id": "scale_01", "farmer_id": "1234", "timestamp": 1762318800, "unit": "kg", "weight": 18.8 },
+      "-Logs_ID_009_ex2": { "device_id": "scale_01", "farmer_id": "9012", "timestamp": 1762322400, "unit": "kg", "weight": 23.5 }
     },
     "2025-11-06": {
-      "-Logs_ID_013": {
-        "device_id": "scale_01",
-        "farmer_id": "1234",
-        "timestamp": 1699261200,
-        "unit": "kg",
-        "weight": 28.1
-      },
-      "-Logs_ID_014": {
-        "device_id": "scale_02",
-        "farmer_id": "5678",
-        "timestamp": 1699263000,
-        "unit": "kg",
-        "weight": 14.7
-      }
+      "-Logs_ID_011": { "device_id": "scale_01", "farmer_id": "1234", "timestamp": 1762398000, "unit": "kg", "weight": 28.1 },
+      "-Logs_ID_012": { "device_id": "scale_01", "farmer_id": "5678", "timestamp": 1762401600, "unit": "kg", "weight": 14.7 },
+      "-Logs_ID_011_ex1": { "device_id": "scale_01", "farmer_id": "3456", "timestamp": 1762405200, "unit": "kg", "weight": 16.9 },
+      "-Logs_ID_011_ex2": { "device_id": "scale_01", "farmer_id": "9012", "timestamp": 1762408800, "unit": "kg", "weight": 20.4 }
     },
     "2025-11-07": {
-      "-Logs_ID_015": {
-        "device_id": "scale_02",
-        "farmer_id": "9012",
-        "timestamp": 1699347600,
-        "unit": "kg",
-        "weight": 23
-      },
-      "-Logs_ID_016": {
-        "device_id": "scale_01",
-        "farmer_id": "1234",
-        "timestamp": 1699349400,
-        "unit": "kg",
-        "weight": 15.8
-      }
+      "-Logs_ID_013": { "device_id": "scale_01", "farmer_id": "9012", "timestamp": 1762484400, "unit": "kg", "weight": 23.0 },
+      "-Logs_ID_014": { "device_id": "scale_01", "farmer_id": "3456", "timestamp": 1762488000, "unit": "kg", "weight": 19.4 },
+      "-Logs_ID_013_ex1": { "device_id": "scale_01", "farmer_id": "1234", "timestamp": 1762491600, "unit": "kg", "weight": 15.2 },
+      "-Logs_ID_013_ex2": { "device_id": "scale_01", "farmer_id": "5678", "timestamp": 1762495200, "unit": "kg", "weight": 18.9 }
     },
     "2025-11-08": {
-      "-Logs_ID_017": {
-        "device_id": "scale_01",
-        "farmer_id": "5678",
-        "timestamp": 1699434000,
-        "unit": "kg",
-        "weight": 19.5
-      }
+      "-Logs_ID_015": { "device_id": "scale_01", "farmer_id": "1234", "timestamp": 1762570800, "unit": "kg", "weight": 15.8 },
+      "-Logs_ID_016": { "device_id": "scale_01", "farmer_id": "5678", "timestamp": 1762574400, "unit": "kg", "weight": 19.5 },
+      "-Logs_ID_015_ex1": { "device_id": "scale_01", "farmer_id": "3456", "timestamp": 1762578000, "unit": "kg", "weight": 21.1 },
+      "-Logs_ID_015_ex2": { "device_id": "scale_01", "farmer_id": "9012", "timestamp": 1762581600, "unit": "kg", "weight": 24.3 }
     },
     "2025-11-09": {
-      "-Logs_ID_018": {
-        "device_id": "scale_01",
-        "farmer_id": "9012",
-        "timestamp": 1699520400,
-        "unit": "kg",
-        "weight": 20.8
-      },
-      "-Logs_ID_019": {
-        "device_id": "scale_02",
-        "farmer_id": "1234",
-        "timestamp": 1699522200,
-        "unit": "kg",
-        "weight": 13.4
-      }
+      "-Logs_ID_017": { "device_id": "scale_01", "farmer_id": "9012", "timestamp": 1762657200, "unit": "kg", "weight": 20.8 },
+      "-Logs_ID_018": { "device_id": "scale_01", "farmer_id": "3456", "timestamp": 1762660800, "unit": "kg", "weight": 16.9 },
+      "-Logs_ID_017_ex1": { "device_id": "scale_01", "farmer_id": "1234", "timestamp": 1762664400, "unit": "kg", "weight": 12.5 },
+      "-Logs_ID_017_ex2": { "device_id": "scale_01", "farmer_id": "5678", "timestamp": 1762668000, "unit": "kg", "weight": 19.8 }
     },
     "2025-11-10": {
-      "-Logs_ID_020": {
-        "device_id": "scale_01",
-        "farmer_id": "5678",
-        "timestamp": 1699606800,
-        "unit": "kg",
-        "weight": 16.7
-      },
-      "-Logs_ID_021": {
-        "device_id": "scale_02",
-        "farmer_id": "1234",
-        "timestamp": 1699608600,
-        "unit": "kg",
-        "weight": 22.1
-      }
-    }
+      "-Logs_ID_019": { "device_id": "scale_01", "farmer_id": "1234", "timestamp": 1762743600, "unit": "kg", "weight": 13.4 },
+      "-Logs_ID_020": { "device_id": "scale_01", "farmer_id": "5678", "timestamp": 1762747200, "unit": "kg", "weight": 16.7 },
+      "-Logs_ID_019_ex1": { "device_id": "scale_01", "farmer_id": "9012", "timestamp": 1762750800, "unit": "kg", "weight": 22.0 },
+      "-Logs_ID_019_ex2": { "device_id": "scale_01", "farmer_id": "3456", "timestamp": 1762754400, "unit": "kg", "weight": 15.5 }
+    },
+    "2025-11-11": {
+      "-Logs_ID_021": { "device_id": "scale_01", "farmer_id": "1234", "timestamp": 1762830000, "unit": "kg", "weight": 22.1 },
+      "-Logs_ID_022": { "device_id": "scale_01", "farmer_id": "9012", "timestamp": 1762833600, "unit": "kg", "weight": 19.8 },
+      "-Logs_ID_021_ex1": { "device_id": "scale_01", "farmer_id": "5678", "timestamp": 1762837200, "unit": "kg", "weight": 18.4 },
+      "-Logs_ID_021_ex2": { "device_id": "scale_01", "farmer_id": "3456", "timestamp": 1762840800, "unit": "kg", "weight": 13.9 }
+    },
+    "2025-11-12": {
+      "-Logs_ID_023": { "device_id": "scale_01", "farmer_id": "3456", "timestamp": 1762916400, "unit": "kg", "weight": 21.3 },
+      "-Logs_ID_024": { "device_id": "scale_01", "farmer_id": "5678", "timestamp": 1762920000, "unit": "kg", "weight": 22.9 },
+      "-Logs_ID_023_ex1": { "device_id": "scale_01", "farmer_id": "1234", "timestamp": 1762923600, "unit": "kg", "weight": 17.5 },
+      "-Logs_ID_023_ex2": { "device_id": "scale_01", "farmer_id": "9012", "timestamp": 1762927200, "unit": "kg", "weight": 20.1 }
+    },
+    "2025-11-13": {
+      "-Logs_ID_025": { "device_id": "scale_01", "farmer_id": "1234", "timestamp": 1763002800, "unit": "kg", "weight": 16.2 },
+      "-Logs_ID_026": { "device_id": "scale_01", "farmer_id": "9012", "timestamp": 1763006400, "unit": "kg", "weight": 18.5 },
+      "-Logs_ID_025_ex1": { "device_id": "scale_01", "farmer_id": "5678", "timestamp": 1763010000, "unit": "kg", "weight": 23.8 },
+      "-Logs_ID_025_ex2": { "device_id": "scale_01", "farmer_id": "3456", "timestamp": 1763013600, "unit": "kg", "weight": 19.2 }
+    },
+    "2025-11-14": {
+      "-Logs_ID_027": { "device_id": "scale_01", "farmer_id": "5678", "timestamp": 1763089200, "unit": "kg", "weight": 24.1 },
+      "-Logs_ID_028": { "device_id": "scale_01", "farmer_id": "3456", "timestamp": 1763092800, "unit": "kg", "weight": 20.9 },
+      "-Logs_ID_027_ex1": { "device_id": "scale_01", "farmer_id": "1234", "timestamp": 1763096400, "unit": "kg", "weight": 15.7 },
+      "-Logs_ID_027_ex2": { "device_id": "scale_01", "farmer_id": "9012", "timestamp": 1763100000, "unit": "kg", "weight": 18.2 }
+    },
+    "2025-11-15": {
+      "-Logs_ID_029": { "device_id": "scale_01", "farmer_id": "9012", "timestamp": 1763175600, "unit": "kg", "weight": 22.3 },
+      "-Logs_ID_030": { "device_id": "scale_01", "farmer_id": "1234", "timestamp": 1763179200, "unit": "kg", "weight": 13.8 },
+      "-Logs_ID_029_ex1": { "device_id": "scale_01", "farmer_id": "5678", "timestamp": 1763182800, "unit": "kg", "weight": 19.5 },
+      "-Logs_ID_029_ex2": { "device_id": "scale_01", "farmer_id": "3456", "timestamp": 1763186400, "unit": "kg", "weight": 25.1 }
+    },
+    "2025-11-16": {
+      "-Logs_ID_031": { "device_id": "scale_01", "farmer_id": "5678", "timestamp": 1763262000, "unit": "kg", "weight": 20.5 },
+      "-Logs_ID_032": { "device_id": "scale_01", "farmer_id": "3456", "timestamp": 1763265600, "unit": "kg", "weight": 25.2 },
+      "-Logs_ID_031_ex1": { "device_id": "scale_01", "farmer_id": "1234", "timestamp": 1763269200, "unit": "kg", "weight": 16.8 },
+      "-Logs_ID_031_ex2": { "device_id": "scale_01", "farmer_id": "9012", "timestamp": 1763272800, "unit": "kg", "weight": 21.4 }
+    },
+    "2025-11-17": {
+      "-Logs_ID_033": { "device_id": "scale_01", "farmer_id": "1234", "timestamp": 1763348400, "unit": "kg", "weight": 19.1 },
+      "-Logs_ID_034": { "device_id": "scale_01", "farmer_id": "9012", "timestamp": 1763352000, "unit": "kg", "weight": 15.0 },
+      "-Logs_ID_033_ex1": { "device_id": "scale_01", "farmer_id": "3456", "timestamp": 1763355600, "unit": "kg", "weight": 22.7 },
+      "-Logs_ID_033_ex2": { "device_id": "scale_01", "farmer_id": "5678", "timestamp": 1763359200, "unit": "kg", "weight": 18.3 }
+    },
+    "2025-11-18": {
+      "-Logs_ID_035": { "device_id": "scale_01", "farmer_id": "1234", "timestamp": 1763434800, "unit": "kg", "weight": 12.4 },
+      "-Logs_ID_036": { "device_id": "scale_01", "farmer_id": "5678", "timestamp": 1763438400, "unit": "kg", "weight": 21.8 },
+      "-Logs_ID_035_ex1": { "device_id": "scale_01", "farmer_id": "9012", "timestamp": 1763442000, "unit": "kg", "weight": 24.5 },
+      "-Logs_ID_035_ex2": { "device_id": "scale_01", "farmer_id": "3456", "timestamp": 1763445600, "unit": "kg", "weight": 17.2 }
+    },
+    "2025-11-19": {
+      "-Logs_ID_037": { "device_id": "scale_01", "farmer_id": "3456", "timestamp": 1763521200, "unit": "kg", "weight": 18.9 },
+      "-Logs_ID_038": { "device_id": "scale_01", "farmer_id": "9012", "timestamp": 1763524800, "unit": "kg", "weight": 23.5 },
+      "-Logs_ID_037_ex1": { "device_id": "scale_01", "farmer_id": "1234", "timestamp": 1763528400, "unit": "kg", "weight": 16.1 },
+      "-Logs_ID_037_ex2": { "device_id": "scale_01", "farmer_id": "5678", "timestamp": 1763532000, "unit": "kg", "weight": 14.8 }
+    },
+    "2025-11-20": {
+      "-Logs_ID_039": { "device_id": "scale_01", "farmer_id": "1234", "timestamp": 1763607600, "unit": "kg", "weight": 16.8 },
+      "-Logs_ID_040": { "device_id": "scale_01", "farmer_id": "5678", "timestamp": 1763611200, "unit": "kg", "weight": 19.2 },
+      "-Logs_ID_039_ex1": { "device_id": "scale_01", "farmer_id": "9798", "timestamp": 1763614800, "unit": "kg", "weight": 13.5 },
+      "-Logs_ID_039_ex2": { "device_id": "scale_01", "farmer_id": "3456", "timestamp": 1763618400, "unit": "kg", "weight": 21.0 }
+    },
+    "2025-11-21": {
+      "-Logs_ID_041": { "device_id": "scale_01", "farmer_id": "3456", "timestamp": 1763694000, "unit": "kg", "weight": 22.5 },
+      "-Logs_ID_042": { "device_id": "scale_01", "farmer_id": "9012", "timestamp": 1763697600, "unit": "kg", "weight": 17.3 },
+      "-Logs_ID_041_ex1": { "device_id": "scale_01", "farmer_id": "9798", "timestamp": 1763701200, "unit": "kg", "weight": 15.2 },
+      "-Logs_ID_041_ex2": { "device_id": "scale_01", "farmer_id": "1234", "timestamp": 1763704800, "unit": "kg", "weight": 18.7 }
+    },
+    "2025-11-22": {
+      "-Logs_ID_043": { "device_id": "scale_01", "farmer_id": "1234", "timestamp": 1763780400, "unit": "kg", "weight": 14.9 },
+      "-Logs_ID_044": { "device_id": "scale_01", "farmer_id": "5678", "timestamp": 1763784000, "unit": "kg", "weight": 24.6 },
+      "-Logs_ID_043_ex1": { "device_id": "scale_01", "farmer_id": "9012", "timestamp": 1763787600, "unit": "kg", "weight": 20.3 },
+      "-Logs_ID_043_ex2": { "device_id": "scale_01", "farmer_id": "9798", "timestamp": 1763791200, "unit": "kg", "weight": 16.8 }
+    },
+    "2025-11-23": {
+      "-Logs_ID_045": { "device_id": "scale_01", "farmer_id": "3456", "timestamp": 1763866800, "unit": "kg", "weight": 13.2 },
+      "-Logs_ID_046": { "device_id": "scale_01", "farmer_id": "9012", "timestamp": 1763870400, "unit": "kg", "weight": 20.1 },
+      "-Logs_ID_045_ex1": { "device_id": "scale_01", "farmer_id": "1234", "timestamp": 1763874000, "unit": "kg", "weight": 17.4 },
+      "-Logs_ID_045_ex2": { "device_id": "scale_01", "farmer_id": "5678", "timestamp": 1763877600, "unit": "kg", "weight": 22.5 }
+    },
+    "2025-11-24": {
+      "-Logs_ID_047": { "device_id": "scale_01", "farmer_id": "1234", "timestamp": 1763953200, "unit": "kg", "weight": 18.7 },
+      "-Logs_ID_048": { "device_id": "scale_01", "farmer_id": "5678", "timestamp": 1763956800, "unit": "kg", "weight": 22.0 },
+      "-Logs_ID_047_ex1": { "device_id": "scale_01", "farmer_id": "3456", "timestamp": 1763960400, "unit": "kg", "weight": 14.8 },
+      "-Logs_ID_047_ex2": { "device_id": "scale_01", "farmer_id": "9798", "timestamp": 1763964000, "unit": "kg", "weight": 19.2 }
+    },
+    "2025-11-25": {
+      "-Logs_ID_049": { "device_id": "scale_01", "farmer_id": "3456", "timestamp": 1764039600, "unit": "kg", "weight": 25.8 },
+      "-Logs_ID_050": { "device_id": "scale_01", "farmer_id": "9012", "timestamp": 1764043200, "unit": "kg", "weight": 15.6 },
+      "-Logs_ID_049_ex1": { "device_id": "scale_01", "farmer_id": "9798", "timestamp": 1764046800, "unit": "kg", "weight": 13.4 },
+      "-Logs_ID_049_ex2": { "device_id": "scale_01", "farmer_id": "1234", "timestamp": 1764050400, "unit": "kg", "weight": 21.9 }
+    },
+    "2025-11-26": {
+      "-Logs_ID_051": { "device_id": "scale_01", "farmer_id": "1234", "timestamp": 1764126000, "unit": "kg", "weight": 13.9 },
+      "-Logs_ID_052": { "device_id": "scale_01", "farmer_id": "5678", "timestamp": 1764129600, "unit": "kg", "weight": 19.4 },
+      "-Logs_ID_051_ex1": { "device_id": "scale_01", "farmer_id": "3456", "timestamp": 1764133200, "unit": "kg", "weight": 18.1 },
+      "-Logs_ID_051_ex2": { "device_id": "scale_01", "farmer_id": "9012", "timestamp": 1764136800, "unit": "kg", "weight": 24.3 }
+    },
+    "2025-11-27": {
+      "-Logs_ID_053": { "device_id": "scale_01", "farmer_id": "3456", "timestamp": 1764212400, "unit": "kg", "weight": 17.8 },
+      "-Logs_ID_054": { "device_id": "scale_01", "farmer_id": "9012", "timestamp": 1764216000, "unit": "kg", "weight": 21.5 },
+      "-Logs_ID_053_ex1": { "device_id": "scale_01", "farmer_id": "9798", "timestamp": 1764219600, "unit": "kg", "weight": 15.9 },
+      "-Logs_ID_053_ex2": { "device_id": "scale_01", "farmer_id": "5678", "timestamp": 1764223200, "unit": "kg", "weight": 20.1 }
+    },
+    "2025-11-28": {
+      "-Logs_ID_055": { "device_id": "scale_01", "farmer_id": "1234", "timestamp": 1764298800, "unit": "kg", "weight": 16.5 },
+      "-Logs_ID_056": { "device_id": "scale_01", "farmer_id": "5678", "timestamp": 1764302400, "unit": "kg", "weight": 23.2 },
+      "-Logs_ID_055_ex1": { "device_id": "scale_01", "farmer_id": "3456", "timestamp": 1764306000, "unit": "kg", "weight": 14.7 },
+      "-Logs_ID_055_ex2": { "device_id": "scale_01", "farmer_id": "9012", "timestamp": 1764309600, "unit": "kg", "weight": 19.8 }
+    },
+    "2025-11-29": {
+      "-Logs_ID_057": { "device_id": "scale_01", "farmer_id": "3456", "timestamp": 1764385200, "unit": "kg", "weight": 14.3 },
+      "-Logs_ID_058": { "device_id": "scale_01", "farmer_id": "9012", "timestamp": 1764388800, "unit": "kg", "weight": 18.9 },
+      "-Logs_ID_057_ex1": { "device_id": "scale_01", "farmer_id": "1234", "timestamp": 1764392400, "unit": "kg", "weight": 22.4 },
+      "-Logs_ID_057_ex2": { "device_id": "scale_01", "farmer_id": "9798", "timestamp": 1764396000, "unit": "kg", "weight": 16.5 }
+    },
+    "2025-11-30": {
+      "-Logs_ID_059": { "device_id": "scale_01", "farmer_id": "1234", "timestamp": 1764471600, "unit": "kg", "weight": 18.5 },
+      "-Logs_ID_060": { "device_id": "scale_01", "farmer_id": "5678", "timestamp": 1764475200, "unit": "kg", "weight": 20.7 },
+      "-Logs_ID_059_ex1": { "device_id": "scale_01", "farmer_id": "3456", "timestamp": 1764478800, "unit": "kg", "weight": 25.3 },
+      "-Logs_ID_059_ex2": { "device_id": "scale_01", "farmer_id": "9012", "timestamp": 1764482400, "unit": "kg", "weight": 14.2 }
+    },
+    
+  "2025-12-01": {
+    "-Logs_ID_061": { "device_id": "scale_01", "farmer_id": "3456", "timestamp": 1764558000, "unit": "kg", "weight": 21.2 },
+    "-Logs_ID_062": { "device_id": "scale_01", "farmer_id": "9012", "timestamp": 1764561600, "unit": "kg", "weight": 19.5 },
+    "-Logs_ID_061_ex1": { "device_id": "scale_01", "farmer_id": "1234", "timestamp": 1764565200, "unit": "kg", "weight": 16.8 },
+    "-Logs_ID_061_ex2": { "device_id": "scale_01", "farmer_id": "5678", "timestamp": 1764568800, "unit": "kg", "weight": 23.0 }
+  },
+  "2025-12-02": {
+    "-Logs_ID_063": { "device_id": "scale_01", "farmer_id": "9798", "timestamp": 1764644400, "unit": "kg", "weight": 14.5 },
+    "-Logs_ID_064": { "device_id": "scale_01", "farmer_id": "5678", "timestamp": 1764648000, "unit": "kg", "weight": 20.1 },
+    "-Logs_ID_063_ex1": { "device_id": "scale_01", "farmer_id": "3456", "timestamp": 1764651600, "unit": "kg", "weight": 18.9 },
+    "-Logs_ID_063_ex2": { "device_id": "scale_01", "farmer_id": "9012", "timestamp": 1764655200, "unit": "kg", "weight": 22.4 }
+  },
+  "2025-12-03": {
+    "-Logs_ID_065": { "device_id": "scale_01", "farmer_id": "1234", "timestamp": 1764730800, "unit": "kg", "weight": 17.2 },
+    "-Logs_ID_066": { "device_id": "scale_01", "farmer_id": "9012", "timestamp": 1764734400, "unit": "kg", "weight": 24.6 },
+    "-Logs_ID_065_ex1": { "device_id": "scale_01", "farmer_id": "5678", "timestamp": 1764738000, "unit": "kg", "weight": 19.3 },
+    "-Logs_ID_065_ex2": { "device_id": "scale_01", "farmer_id": "9798", "timestamp": 1764741600, "unit": "kg", "weight": 15.8 }
+  },
+  "2025-12-04": {
+    "-Logs_ID_067": { "device_id": "scale_01", "farmer_id": "3456", "timestamp": 1764817200, "unit": "kg", "weight": 21.0 },
+    "-Logs_ID_068": { "device_id": "scale_01", "farmer_id": "1234", "timestamp": 1764820800, "unit": "kg", "weight": 13.9 },
+    "-Logs_ID_067_ex1": { "device_id": "scale_01", "farmer_id": "5678", "timestamp": 1764824400, "unit": "kg", "weight": 25.1 },
+    "-Logs_ID_067_ex2": { "device_id": "scale_01", "farmer_id": "9012", "timestamp": 1764828000, "unit": "kg", "weight": 18.4 }
+  },
+  "2025-12-05": {
+    "-Logs_ID_069": { "device_id": "scale_01", "farmer_id": "9798", "timestamp": 1764903600, "unit": "kg", "weight": 16.5 },
+    "-Logs_ID_070": { "device_id": "scale_01", "farmer_id": "3456", "timestamp": 1764907200, "unit": "kg", "weight": 19.8 },
+    "-Logs_ID_069_ex1": { "device_id": "scale_01", "farmer_id": "1234", "timestamp": 1764910800, "unit": "kg", "weight": 22.7 },
+    "-Logs_ID_069_ex2": { "device_id": "scale_01", "farmer_id": "5678", "timestamp": 1764914400, "unit": "kg", "weight": 14.2 }
+  },
+  "2025-12-06": {
+    "-Logs_ID_071": { "device_id": "scale_01", "farmer_id": "9012", "timestamp": 1764990000, "unit": "kg", "weight": 23.5 },
+    "-Logs_ID_072": { "device_id": "scale_01", "farmer_id": "1234", "timestamp": 1764993600, "unit": "kg", "weight": 15.1 },
+    "-Logs_ID_071_ex1": { "device_id": "scale_01", "farmer_id": "9798", "timestamp": 1764997200, "unit": "kg", "weight": 12.8 },
+    "-Logs_ID_071_ex2": { "device_id": "scale_01", "farmer_id": "3456", "timestamp": 1765000800, "unit": "kg", "weight": 20.4 }
+  },
+  "2025-12-07": {
+    "-Logs_ID_073": { "device_id": "scale_01", "farmer_id": "5678", "timestamp": 1765076400, "unit": "kg", "weight": 19.9 },
+    "-Logs_ID_074": { "device_id": "scale_01", "farmer_id": "9012", "timestamp": 1765080000, "unit": "kg", "weight": 21.6 },
+    "-Logs_ID_073_ex1": { "device_id": "scale_01", "farmer_id": "1234", "timestamp": 1765083600, "unit": "kg", "weight": 17.3 },
+    "-Logs_ID_073_ex2": { "device_id": "scale_01", "farmer_id": "3456", "timestamp": 1765087200, "unit": "kg", "weight": 24.2 },
+    "-Logs_ID_075_TODAY": { "device_id": "scale_01", "farmer_id": "9798", "timestamp": 1765090800, "unit": "kg", "weight": 18.9 }
+  }
+
+    
   },
   "workers": {
     "1234": {
-      "assigned_area": "Estate Block A",
-      "home_gps_location": {
-        "latitude": 6.0535,
-        "longitude": 80.221
-      },
-      "name": "Nimal Perera"
+      "active": true,
+      "home_gps_location": { "latitude": 6.0535, "longitude": 80.221 },
+      "name": "Nimal Perera",
+      "phone_number": "+94771234567"
+    },
+    "3456": {
+      "active": true,
+      "home_gps_location": { "latitude": 6.8511, "longitude": 80.7019 },
+      "name": "Anura Bandara",
+      "phone_number": "+94765544332"
     },
     "5678": {
-      "assigned_area": "Estate Block B",
-      "home_gps_location": {
-        "latitude": 5.9485,
-        "longitude": 80.5353
-      },
-      "name": "Sunitha Silva"
+      "active": true,
+      "home_gps_location": { "latitude": 5.9485, "longitude": 80.5353 },
+      "name": "Sunitha Silva",
+      "phone_number": "+94779094388"
     },
     "9012": {
-      "assigned_Carea": "Estate Block A",
-      "home_gps_location": {
-        "latitude": 7.2906,
-        "longitude": 80.6337
-      },
-      "name": "Kamal Fernando"
+      "active": true,
+      "home_gps_location": { "latitude": 7.2906, "longitude": 80.6337 },
+      "name": "Kamal Fernando",
+      "phone_number": "+94775689694"
+    },
+    "9798": {
+      "home_gps_location": { "latitude": 6.1413183, "longitude": 80.1354617 },
+      "name": "samudu",
+      "phone_number": "+94769798081",
+      "registered_on": 1763532733723
     }
   }
 }

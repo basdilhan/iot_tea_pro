@@ -29,6 +29,29 @@ class _ReportsScreenState extends State<ReportsScreen> {
       initialDate: _selectedDate,
       firstDate: DateTime(2020),
       lastDate: DateTime.now(),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            dialogTheme: DialogThemeData(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+            ),
+            datePickerTheme: const DatePickerThemeData(
+              headerHeadlineStyle: TextStyle(fontSize: 20),
+              dayStyle: TextStyle(fontSize: 12),
+              yearStyle: TextStyle(fontSize: 14),
+            ),
+          ),
+          child: Container(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height * 0.65,
+              maxWidth: MediaQuery.of(context).size.width * 0.85,
+            ),
+            child: child!,
+          ),
+        );
+      },
     );
     if (picked != null && picked != _selectedDate) {
       setState(() {
@@ -92,8 +115,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
     return sections;
   }
 
-  List<Widget> _buildLegend() {
-    List<Widget> legendItems = [];
+  Widget _buildLegendSync() {
     List<Color> colors = [
       Colors.blue,
       Colors.green,
@@ -107,25 +129,48 @@ class _ReportsScreenState extends State<ReportsScreen> {
     var sortedFarmers = _farmerTotals.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
 
-    for (int i = 0; i < sortedFarmers.length && i < 7; i++) {
-      legendItems.add(
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(width: 12, height: 12, color: colors[i % colors.length]),
-            const SizedBox(width: 4),
-            Text(
-              'Farmer ${sortedFarmers[i].key}',
-              style: TextStyle(
-                fontSize: 12,
-                color: AppTheme.textColor(context),
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-    return legendItems;
+    return Wrap(
+      spacing: 8,
+      runSpacing: 4,
+      children: List.generate(
+        sortedFarmers.length > 7 ? 7 : sortedFarmers.length,
+        (i) {
+          String farmerId = sortedFarmers[i].key;
+          double weight = sortedFarmers[i].value;
+
+          return FutureBuilder<String>(
+            future: _getFarmerName(farmerId),
+            builder: (context, snapshot) {
+              String farmerName = snapshot.data ?? 'ID: $farmerId';
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      width: 16,
+                      height: 16,
+                      decoration: BoxDecoration(
+                        color: colors[i % colors.length],
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      '$farmerName (${weight.toStringAsFixed(1)} kg)',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: AppTheme.textColor(context),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
   }
 
   @override
@@ -250,11 +295,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                   ),
                                 ),
                                 const SizedBox(height: 16),
-                                Wrap(
-                                  spacing: 8,
-                                  runSpacing: 4,
-                                  children: _buildLegend(),
-                                ),
+                                _buildLegendSync(),
                               ],
                             ),
                           ),

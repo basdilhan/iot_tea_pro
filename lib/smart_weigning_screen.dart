@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:intl/intl.dart';
-import 'dart:ui'; // For BackdropFilter (Glass effect)
-// Adjust this import path if you placed the file in a different folder
+import 'dart:ui';
 import 'animated_gradient_background.dart';
-// import 'payment_provider.dart';
-// import 'package:provider/provider.dart';
+import 'ui_design.dart';
 
 class SmartWeighingScreen extends StatefulWidget {
   const SmartWeighingScreen({super.key});
@@ -31,11 +29,13 @@ class _SmartWeighingScreenState extends State<SmartWeighingScreen> {
 
   void _listenToWeight() {
     _dbRef.child('latest_reading/weight').onValue.listen((event) {
-      if (event.snapshot.value != null && mounted) {
+      if (!mounted) return;
+      final value = event.snapshot.value;
+      if (value != null) {
+        final weight = double.tryParse(value.toString()) ?? 0.0;
         setState(() {
-          _currentWeight = double.parse(event.snapshot.value.toString());
-          // Scale is online only if weight is greater than 0
-          _isScaleOnline = _currentWeight > 0;
+          _currentWeight = weight;
+          _isScaleOnline = weight > 0;
         });
       }
     });
@@ -43,13 +43,11 @@ class _SmartWeighingScreenState extends State<SmartWeighingScreen> {
 
   void _listenToStatus() {
     _dbRef.child('latest_reading/status').onValue.listen((event) {
-      if (event.snapshot.value != null && mounted) {
-        String status = event.snapshot.value.toString();
+      if (!mounted) return;
+      final status = event.snapshot.value?.toString();
+      if (status != null) {
         setState(() {
-          // Override scale status based on Firebase status field
-          if (status == 'offline') {
-            _isScaleOnline = false;
-          }
+          if (status == 'offline') _isScaleOnline = false;
         });
       }
     });
@@ -63,7 +61,7 @@ class _SmartWeighingScreenState extends State<SmartWeighingScreen> {
   }
 
   Future<void> _saveLog() async {
-    if (_isSaving) return; // Prevent multiple taps
+    if (_isSaving) return;
     if (_selectedFarmerId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please select a farmer first!')),
@@ -77,22 +75,18 @@ class _SmartWeighingScreenState extends State<SmartWeighingScreen> {
       return;
     }
 
-    setState(() {
-      _isSaving = true;
-    });
+    setState(() => _isSaving = true);
 
-    String date = DateFormat('yyyy-MM-dd').format(DateTime.now());
-
-    // Get the next log ID number
+    final date = DateFormat('yyyy-MM-dd').format(DateTime.now());
     final logsSnapshot = await _dbRef.child('weighing_logs/$date').get();
     int nextLogNumber = 1;
     if (logsSnapshot.exists) {
       final logs = logsSnapshot.value as Map;
       nextLogNumber = logs.length + 1;
     }
-    String logId = 'Logs_ID_${nextLogNumber.toString().padLeft(3, '0')}';
+    final logId = 'Logs_ID_${nextLogNumber.toString().padLeft(3, '0')}';
 
-    Map<String, dynamic> newLog = {
+    final Map<String, dynamic> newLog = {
       'farmer_id': _selectedFarmerId,
       'farmer_name': _selectedFarmerName,
       'weight': _currentWeight,
@@ -103,37 +97,29 @@ class _SmartWeighingScreenState extends State<SmartWeighingScreen> {
 
     try {
       await _dbRef.child('weighing_logs/$date/$logId').set(newLog);
-      // Reset weight to 0 and set scale offline
       await _dbRef.child('latest_reading/weight').set(0.0);
       await _dbRef.child('latest_reading/status').set('offline');
-
-      // SMS notification removed (future enhancement)
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Saved $_currentWeight kg for $_selectedFarmerName'),
-            backgroundColor: Theme.of(context).colorScheme.primary,
-          ),
-        );
-      }
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Saved $_currentWeight kg for $_selectedFarmerName'),
+          backgroundColor: UIDesign.accentCyan,
+        ),
+      );
       setState(() {
         _selectedFarmerId = null;
         _selectedFarmerName = null;
         _isSaving = false;
       });
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error saving: $e'),
-            backgroundColor: Theme.of(context).colorScheme.error,
-          ),
-        );
-      }
-      setState(() {
-        _isSaving = false;
-      });
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error saving: $e'),
+          backgroundColor: UIDesign.errorRed,
+        ),
+      );
+      setState(() => _isSaving = false);
     }
   }
 
@@ -141,23 +127,12 @@ class _SmartWeighingScreenState extends State<SmartWeighingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // This screen is part of the MainAppScreen's IndexedStack,
-    // so the AppBar is already provided.
-
     return Scaffold(
-      // We use a Stack to layer the background, content, and save bar
       body: Stack(
         children: [
-          // --- 1. THE ANIMATED BACKGROUND ---
           const Positioned.fill(child: AnimatedGradientBackground()),
-
-          // --- 2. THE SCROLLABLE CONTENT ---
-          // CustomScrollView lets us mix scrolling lists (Slivers)
-          // with a dynamic header.
           CustomScrollView(
             slivers: [
-              // --- 3. LIVE WEIGHT HEADER (Sliver) ---
-              // This is the new header that shrinks and sticks
               SliverPersistentHeader(
                 pinned: true,
                 delegate: _LiveWeightHeader(
@@ -165,32 +140,21 @@ class _SmartWeighingScreenState extends State<SmartWeighingScreen> {
                   isOnline: _isScaleOnline,
                 ),
               ),
-
-              // --- 4. "SELECT FARMER" TITLE (Sliver) ---
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(20, 24, 20, 16),
                   child: Text(
                     'Select Farmer',
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.onSurface,
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      color: UIDesign.accentCyan,
                     ),
                   ),
                 ),
               ),
-
-              // --- 5. FARMER LIST (Sliver) ---
               _buildFarmerList(),
-
-              // --- 6. PADDING AT THE BOTTOM ---
-              // This makes sure the list can scroll above the save button
               const SliverToBoxAdapter(child: SizedBox(height: 120)),
             ],
           ),
-
-          // --- 7. THE "GLASS" SAVE BUTTON ---
-          // This is positioned at the bottom of the Stack
           Positioned(
             bottom: 0,
             left: 0,
@@ -205,21 +169,14 @@ class _SmartWeighingScreenState extends State<SmartWeighingScreen> {
   // --- WIDGET: "GLASS" SAVE BAR ---
   Widget _buildGlassSaveBar(BuildContext context) {
     final bool canSave = _selectedFarmerId != null;
-
-    // A clipped rectangle with a blur effect
     return ClipRRect(
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
         child: Container(
           padding: const EdgeInsets.all(16.0),
           decoration: BoxDecoration(
-            // Semi-transparent surface color
-            color: Theme.of(context).colorScheme.surface.withOpacity(0.5),
-            border: Border(
-              top: BorderSide(
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.1),
-              ),
-            ),
+            color: UIDesign.charcoalElevated.withOpacity(0.65),
+            border: Border(top: BorderSide(color: UIDesign.outlineDark)),
           ),
           child: SafeArea(
             top: false,
@@ -229,10 +186,8 @@ class _SmartWeighingScreenState extends State<SmartWeighingScreen> {
               child: FilledButton(
                 onPressed: (canSave && !_isSaving) ? _saveLog : null,
                 style: FilledButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  disabledBackgroundColor: Theme.of(
-                    context,
-                  ).colorScheme.onSurface.withOpacity(0.2),
+                  backgroundColor: UIDesign.accentCyan,
+                  disabledBackgroundColor: UIDesign.outlineDark,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
@@ -260,8 +215,9 @@ class _SmartWeighingScreenState extends State<SmartWeighingScreen> {
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                             letterSpacing: 1,
-                            color: Theme.of(context).colorScheme.onPrimary
-                                .withOpacity(canSave ? 1.0 : 0.5),
+                            color: Colors.white.withOpacity(
+                              canSave ? 1.0 : 0.5,
+                            ),
                           ),
                         ),
                 ),
@@ -344,14 +300,14 @@ class _FarmerCard extends StatelessWidget {
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: theme.colorScheme.primary.withOpacity(0.3),
+                    color: UIDesign.accentCyan.withOpacity(0.35),
                     blurRadius: 10,
                     spreadRadius: 2,
                   ),
                 ]
               : [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withOpacity(0.25),
                     blurRadius: 8,
                     offset: const Offset(0, 4),
                   ),
@@ -360,10 +316,9 @@ class _FarmerCard extends StatelessWidget {
         // Material and InkWell provide the tap effect and shape
         child: Material(
           color: isSelected
-              ? theme
-                    .colorScheme
-                    .primary // Selected color
-              : theme.cardColor.withOpacity(0.8), // Default color
+              ? UIDesign
+                    .accentPurple // Selected
+              : UIDesign.charcoalElevated, // Default
           borderRadius: BorderRadius.circular(16.0),
           child: InkWell(
             onTap: onTap,
@@ -376,16 +331,16 @@ class _FarmerCard extends StatelessWidget {
                   CircleAvatar(
                     radius: 24,
                     backgroundColor: isSelected
-                        ? theme.colorScheme.onPrimary
-                        : theme.colorScheme.secondary,
+                        ? Colors.white
+                        : UIDesign.accentCyan,
                     child: Text(
                       name[0].toUpperCase(),
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         color: isSelected
-                            ? theme.colorScheme.primary
-                            : theme.colorScheme.onSecondary,
+                            ? UIDesign.accentPurple
+                            : Colors.white,
                       ),
                     ),
                   ),
@@ -400,16 +355,16 @@ class _FarmerCard extends StatelessWidget {
                           style: theme.textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: isSelected
-                                ? theme.colorScheme.onPrimary
-                                : theme.colorScheme.onSurface,
+                                ? Colors.white
+                                : UIDesign.textPrimary,
                           ),
                         ),
                         Text(
                           'ID: $id',
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: isSelected
-                                ? theme.colorScheme.onPrimary.withOpacity(0.7)
-                                : theme.colorScheme.onSurface.withOpacity(0.6),
+                                ? Colors.white70
+                                : UIDesign.textSecondary,
                           ),
                         ),
                       ],
@@ -425,7 +380,7 @@ class _FarmerCard extends StatelessWidget {
                     child: isSelected
                         ? Icon(
                             Icons.check_circle,
-                            color: theme.colorScheme.onPrimary,
+                            color: Colors.white,
                             key: const ValueKey('icon'),
                           )
                         : const SizedBox(key: ValueKey('empty')),
@@ -453,7 +408,6 @@ class _LiveWeightHeader extends SliverPersistentHeaderDelegate {
     double shrinkOffset,
     bool overlapsContent,
   ) {
-    final theme = Theme.of(context);
     final progress = shrinkOffset / (maxExtent - minExtent);
     // isShrunk is true when the header is small
     final isShrunk = progress > 0.5;
@@ -461,15 +415,9 @@ class _LiveWeightHeader extends SliverPersistentHeaderDelegate {
     // Use a container with "glass" effect for the header
     return Container(
       decoration: BoxDecoration(
-        color: theme.colorScheme.primary.withOpacity(0.8),
+        gradient: UIDesign.heroGradient(),
         borderRadius: const BorderRadius.vertical(bottom: Radius.circular(30)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        boxShadow: [UIDesign.softGlow(UIDesign.accentCyan)],
       ),
       child: ClipRRect(
         borderRadius: const BorderRadius.vertical(bottom: Radius.circular(30)),
@@ -490,7 +438,7 @@ class _LiveWeightHeader extends SliverPersistentHeaderDelegate {
                     child: Text(
                       'LIVE SCALE READING',
                       style: TextStyle(
-                        color: theme.colorScheme.onPrimary.withOpacity(0.7),
+                        color: Colors.white70,
                         fontSize: 14,
                         letterSpacing: 1.2,
                       ),
@@ -526,7 +474,7 @@ class _LiveWeightHeader extends SliverPersistentHeaderDelegate {
                           key: ValueKey<double>(weight),
                           weight.toStringAsFixed(2),
                           style: TextStyle(
-                            color: theme.colorScheme.onPrimary,
+                            color: Colors.white,
                             fontSize: isShrunk ? 32 : 60, // Shrinks
                             fontWeight: FontWeight.bold,
                           ),
@@ -536,7 +484,7 @@ class _LiveWeightHeader extends SliverPersistentHeaderDelegate {
                       Text(
                         'kg',
                         style: TextStyle(
-                          color: theme.colorScheme.onPrimary.withOpacity(0.7),
+                          color: Colors.white70,
                           fontSize: isShrunk ? 16 : 24, // Shrinks
                         ),
                       ),
@@ -555,8 +503,8 @@ class _LiveWeightHeader extends SliverPersistentHeaderDelegate {
                       ),
                       decoration: BoxDecoration(
                         color: isOnline
-                            ? Colors.green.shade400
-                            : Colors.red.shade400,
+                            ? UIDesign.successGreen
+                            : UIDesign.errorRed,
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Row(

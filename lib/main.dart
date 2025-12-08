@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'auth_wrapper.dart';
 import 'theme_provider.dart';
+import 'payment_provider.dart';
+import 'ui_design.dart';
 
 // Define our "Tea Theme" colors with light/dark support - Navy Blue, Brown, Grey theme
 class AppTheme {
@@ -52,8 +54,13 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => ThemeProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => ThemeProvider()),
+        ChangeNotifierProvider(
+          create: (context) => PaymentProvider()..loadPrice(),
+        ),
+      ],
       child: const TeaWeigherApp(),
     ),
   );
@@ -134,54 +141,7 @@ class TeaWeigherApp extends StatelessWidget {
   }
 
   ThemeData _buildDarkTheme() {
-    return ThemeData.dark().copyWith(
-      primaryColor: const Color(0xFF4A90E2),
-      scaffoldBackgroundColor: const Color(0xFF1A202C),
-      appBarTheme: AppBarTheme(
-        backgroundColor: const Color(0xFF2D3748),
-        elevation: 4,
-        titleTextStyle: const TextStyle(
-          color: Colors.white,
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-        ),
-        iconTheme: const IconThemeData(color: Colors.white),
-      ),
-      cardTheme: CardThemeData(
-        elevation: 2,
-        color: const Color(0xFF374151),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-      ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF8B4513),
-          foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
-        ),
-      ),
-      bottomNavigationBarTheme: BottomNavigationBarThemeData(
-        backgroundColor: const Color(0xFF2D3748),
-        selectedItemColor: const Color(0xFF4A90E2),
-        unselectedItemColor: Colors.grey[400],
-        type: BottomNavigationBarType.fixed,
-      ),
-      inputDecorationTheme: InputDecorationTheme(
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8.0),
-          borderSide: BorderSide(color: Colors.grey[600]!),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8.0),
-          borderSide: const BorderSide(color: Color(0xFF4A90E2), width: 2.0),
-        ),
-        labelStyle: const TextStyle(color: Color(0xFF4A90E2)),
-        prefixIconColor: Colors.grey[400],
-      ),
-    );
+    // Use the centralized UIDesign dark theme for consistency
+    return UIDesign.buildDarkTheme();
   }
 }

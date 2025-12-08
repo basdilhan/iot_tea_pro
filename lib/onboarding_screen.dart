@@ -44,7 +44,7 @@ class _OnboardingScreenState extends State<OnboardingScreen>
     OnboardingPageData(
       title: 'Welcome to\nTea Leaf Weigher',
       description:
-          'Next-generation smart tea leaf management with AI-powered analytics and real-time tracking.',
+          'Next-generation smart tea leaf management with  analytics and real-time tracking.',
       icon: Icons.eco_outlined,
       gradient: const [Color(0xFF00F5FF), Color(0xFF00D4FF)],
     ),

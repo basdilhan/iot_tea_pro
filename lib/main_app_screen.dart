@@ -9,7 +9,8 @@ import 'package:iot_tea/map_screen.dart';
 import 'package:iot_tea/reports_screen.dart';
 import 'package:iot_tea/smart_weigning_screen.dart';
 import 'package:iot_tea/payment_settings_screen.dart';
-// import 'package:iot_tea/onboarding_screen.dart';
+import 'package:iot_tea/collector_analytics_screen.dart';
+import 'package:iot_tea/role_selection_screen.dart';
 import 'theme_provider.dart';
 
 class MainAppScreen extends StatefulWidget {
@@ -60,10 +61,17 @@ class _MainAppScreenState extends State<MainAppScreen> {
 
   Future<void> _signOut() async {
     try {
-      // Reset onboarding flag before signing out
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setBool('onboarding_completed', false);
+      await prefs.clear(); // Clear all session data including onboarding
       await FirebaseAuth.instance.signOut();
+
+      if (mounted) {
+        // Navigate to role selection and remove all previous routes
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const RoleSelectionScreen()),
+          (route) => false,
+        );
+      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -81,6 +89,18 @@ class _MainAppScreenState extends State<MainAppScreen> {
         backgroundColor: Theme.of(context).primaryColor,
         elevation: 1.0, // Subtle shadow
         actions: [
+          // Quick access to Worker Analytics
+          IconButton(
+            icon: const Icon(Icons.analytics),
+            tooltip: 'Worker Analytics',
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const CollectorAnalyticsScreen(),
+                ),
+              );
+            },
+          ),
           // Theme toggle button
           Consumer<ThemeProvider>(
             builder: (context, themeProvider, child) {

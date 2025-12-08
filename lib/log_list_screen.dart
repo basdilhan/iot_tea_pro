@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:intl/intl.dart';
-import '../main.dart'; // For theme
+import 'package:provider/provider.dart';
+import 'ui_design.dart';
+import 'payment_provider.dart';
 
 class LogListScreen extends StatefulWidget {
   const LogListScreen({super.key});
@@ -12,6 +14,8 @@ class LogListScreen extends StatefulWidget {
 
 class _LogListScreenState extends State<LogListScreen> {
   DateTime _selectedDate = DateTime.now();
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
 
   // We need these refs to look up names
   final DatabaseReference _workersRef = FirebaseDatabase.instance.ref(
@@ -21,6 +25,12 @@ class _LogListScreenState extends State<LogListScreen> {
     '/devices',
   );
 
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
   // Function to show the date picker
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -28,6 +38,29 @@ class _LogListScreenState extends State<LogListScreen> {
       initialDate: _selectedDate,
       firstDate: DateTime(2020),
       lastDate: DateTime.now(),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            dialogTheme: DialogThemeData(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+            ),
+            datePickerTheme: const DatePickerThemeData(
+              headerHeadlineStyle: TextStyle(fontSize: 20),
+              dayStyle: TextStyle(fontSize: 12),
+              yearStyle: TextStyle(fontSize: 14),
+            ),
+          ),
+          child: Container(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height * 0.65,
+              maxWidth: MediaQuery.of(context).size.width * 0.85,
+            ),
+            child: child!,
+          ),
+        );
+      },
     );
     if (picked != null && picked != _selectedDate) {
       setState(() {
@@ -50,13 +83,22 @@ class _LogListScreenState extends State<LogListScreen> {
     return 'Unknown ID: $farmerId';
   }
 
-  // Helper to get device name from ID
+  // Helper to get device label from ID
+  // If a human-friendly name exists under /devices/{id}/location_name, use it.
+  // Otherwise, fall back to showing the raw device_id from the log.
   Future<String> _getDeviceName(String deviceId) async {
-    final snapshot = await _devicesRef.child('$deviceId/location_name').get();
-    if (snapshot.exists) {
-      return snapshot.value.toString();
+    try {
+      final snapshot = await _devicesRef.child('$deviceId/location_name').get();
+      if (snapshot.exists) {
+        final value = snapshot.value?.toString().trim();
+        if (value != null && value.isNotEmpty) {
+          return value;
+        }
+      }
+    } catch (_) {
+      // Ignore lookup errors and fall back to deviceId
     }
-    return 'Unknown Device';
+    return deviceId; // show the exact device_id when no name found
   }
 
   @override
@@ -83,7 +125,7 @@ class _LogListScreenState extends State<LogListScreen> {
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: AppTheme.primaryGreen(context),
+                      color: UIDesign.accentCyan,
                     ),
                   ),
                   const Text(
@@ -92,23 +134,59 @@ class _LogListScreenState extends State<LogListScreen> {
                   ),
                 ],
               ),
-              TextButton.icon(
-                icon: Icon(
-                  Icons.calendar_today,
-                  color: AppTheme.accentOrange(context),
-                ),
-                label: Text(
-                  DateFormat('MMM d, yyyy').format(_selectedDate),
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: AppTheme.accentOrange(context),
+              Flexible(
+                child: TextButton.icon(
+                  icon: Icon(
+                    Icons.calendar_today,
+                    color: UIDesign.accentPurple,
                   ),
+                  label: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      DateFormat('MMM d, yyyy').format(_selectedDate),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: UIDesign.accentPurple,
+                      ),
+                    ),
+                  ),
+                  onPressed: () => _selectDate(context),
                 ),
-                onPressed: () => _selectDate(context),
               ),
             ],
           ),
           const Divider(height: 30),
+
+          // Search Bar
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: TextField(
+              controller: _searchController,
+              decoration: InputDecoration(
+                hintText: 'Search by farmer name...',
+                prefixIcon: const Icon(Icons.search),
+                suffixIcon: _searchQuery.isNotEmpty
+                    ? IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: () {
+                          setState(() {
+                            _searchController.clear();
+                            _searchQuery = '';
+                          });
+                        },
+                      )
+                    : null,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              onChanged: (value) {
+                setState(() {
+                  _searchQuery = value.toLowerCase();
+                });
+              },
+            ),
+          ),
 
           // StreamBuilder to get the logs
           Expanded(
@@ -143,81 +221,167 @@ class _LogListScreenState extends State<LogListScreen> {
                 }).toList();
 
                 // Sort by timestamp (newest first)
-                logList.sort(
-                  (a, b) =>
-                      (b['timestamp'] as int).compareTo(a['timestamp'] as int),
-                );
+                logList.sort((a, b) {
+                  int timeA = (a['timestamp'] as int?) ?? 0;
+                  int timeB = (b['timestamp'] as int?) ?? 0;
+                  return timeB.compareTo(timeA);
+                });
 
-                return ListView.builder(
-                  itemCount: logList.length,
-                  itemBuilder: (context, index) {
-                    Map<dynamic, dynamic> log = logList[index];
-                    String farmerId = log['farmer_id'] ?? 'N/A';
-                    String deviceId = log['device_id'] ?? 'N/A';
-                    String weight = log['weight']?.toString() ?? '0';
-                    int timestamp = log['timestamp'] ?? 0;
+                // Get payment provider for earnings calculation
+                final paymentProvider = Provider.of<PaymentProvider>(context);
 
-                    String formattedTime = 'No timestamp';
-                    if (timestamp != 0) {
-                      formattedTime =
-                          DateFormat('hh:mm:ss a') // Just the time
-                              .format(
-                                DateTime.fromMillisecondsSinceEpoch(
-                                  timestamp * 1000,
-                                ),
-                              );
-                    }
+                return FutureBuilder<
+                  List<MapEntry<Map<dynamic, dynamic>, String>>
+                >(
+                  future: Future.wait(
+                    logList.map((log) async {
+                      String farmerId = log['farmer_id'] ?? 'N/A';
+                      String farmerName = await _getFarmerName(farmerId);
+                      return MapEntry(log, farmerName);
+                    }),
+                  ),
+                  builder:
+                      (
+                        context,
+                        AsyncSnapshot<
+                          List<MapEntry<Map<dynamic, dynamic>, String>>
+                        >
+                        namesSnapshot,
+                      ) {
+                        if (namesSnapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
 
-                    return Card(
-                      margin: const EdgeInsets.symmetric(vertical: 6),
-                      child: ListTile(
-                        leading: CircleAvatar(
-                          backgroundColor: AppTheme.primaryGreen(
-                            context,
-                          ).withOpacity(0.1),
-                          child: Text(
-                            weight,
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: AppTheme.primaryGreen(context),
+                        var logsWithNames = namesSnapshot.data ?? [];
+
+                        // Filter by search query
+                        if (_searchQuery.isNotEmpty) {
+                          logsWithNames = logsWithNames.where((entry) {
+                            return entry.value.toLowerCase().contains(
+                              _searchQuery,
+                            );
+                          }).toList();
+                        }
+
+                        if (logsWithNames.isEmpty) {
+                          return Center(
+                            child: Text(
+                              _searchQuery.isNotEmpty
+                                  ? 'No results for "$_searchQuery"'
+                                  : 'No logs found for this date.',
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: Colors.grey,
+                              ),
                             ),
-                          ),
-                        ),
-                        // Use FutureBuilders to get the names
-                        title: FutureBuilder(
-                          future: _getFarmerName(farmerId),
-                          builder:
-                              (context, AsyncSnapshot<String> nameSnapshot) {
-                                String name = nameSnapshot.data ?? '...';
-                                return Text(
-                                  '$name (ID: $farmerId)',
+                          );
+                        }
+
+                        return ListView.builder(
+                          itemCount: logsWithNames.length,
+                          itemBuilder: (context, index) {
+                            Map<dynamic, dynamic> log =
+                                logsWithNames[index].key;
+                            String farmerName = logsWithNames[index].value;
+                            String farmerId = log['farmer_id'] ?? 'N/A';
+                            String deviceId = log['device_id'] ?? 'N/A';
+                            double weight =
+                                double.tryParse(
+                                  log['weight']?.toString() ?? '0',
+                                ) ??
+                                0.0;
+                            int timestamp = log['timestamp'] ?? 0;
+                            double earnings = paymentProvider.calculateEarnings(
+                              weight,
+                            );
+
+                            String formattedTime = 'No timestamp';
+                            if (timestamp != 0) {
+                              formattedTime =
+                                  DateFormat('hh:mm:ss a') // Just the time
+                                      .format(
+                                        DateTime.fromMillisecondsSinceEpoch(
+                                          timestamp * 1000,
+                                        ),
+                                      );
+                            }
+
+                            return Card(
+                              margin: const EdgeInsets.symmetric(
+                                vertical: 6,
+                                horizontal: 4,
+                              ),
+                              elevation: 2,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                              child: ListTile(
+                                contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 8,
+                                ),
+                                leading: CircleAvatar(
+                                  backgroundColor: UIDesign.accentCyan
+                                      .withOpacity(0.15),
+                                  child: Text(
+                                    weight.toStringAsFixed(1),
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                      color: UIDesign.accentCyan,
+                                    ),
+                                  ),
+                                ),
+                                title: Text(
+                                  '$farmerName (ID: $farmerId)',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                   ),
-                                );
-                              },
-                        ),
-                        subtitle: FutureBuilder(
-                          future: _getDeviceName(deviceId),
-                          builder:
-                              (context, AsyncSnapshot<String> deviceSnapshot) {
-                                String deviceName =
-                                    deviceSnapshot.data ?? '...';
-                                return Text('At $formattedTime on $deviceName');
-                              },
-                        ),
-                        trailing: Text(
-                          '$weight kg',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: AppTheme.accentOrange(context),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
+                                ),
+                                subtitle: FutureBuilder(
+                                  future: _getDeviceName(deviceId),
+                                  builder:
+                                      (
+                                        context,
+                                        AsyncSnapshot<String> deviceSnapshot,
+                                      ) {
+                                        final deviceLabel =
+                                            deviceSnapshot.data ?? deviceId;
+                                        return Text(
+                                          'At $formattedTime on $deviceLabel',
+                                        );
+                                      },
+                                ),
+                                trailing: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      '${weight.toStringAsFixed(1)} kg',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: UIDesign.accentPurple,
+                                      ),
+                                    ),
+                                    Text(
+                                      '₨${NumberFormat('#,##0.00').format(earnings)}',
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: UIDesign.successGreen,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
                 );
               },
             ),

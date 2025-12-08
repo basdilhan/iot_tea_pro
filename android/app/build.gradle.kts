@@ -1,55 +1,64 @@
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
-    id("com.google.gms.google-services") // Make sure this line is here
+    id("kotlin-android")
+    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+    id("dev.flutter.flutter-gradle-plugin")
+    id("com.google.gms.google-services")
 }
-
-// Read the local properties file
-val localProperties = java.util.Properties()
-val localPropertiesFile = rootProject.file("local.properties")
-if (localPropertiesFile.exists()) {
-    localPropertiesFile.inputStream().use { stream ->
-        localProperties.load(stream)
-    }
-}
-val flutterVersionCode = localProperties.getProperty("flutter.versionCode")?.toInt() ?: 1
-val flutterVersionName = localProperties.getProperty("flutter.versionName") ?: "1.0"
-
 android {
     namespace = "com.example.iot_tea"
-    compileSdk = 34 // Use 34 or whatever your Flutter SDK recommends
+    compileSdk = flutter.compileSdkVersion
+    ndkVersion = "27.0.12077973"
 
-    defaultConfig {
-        // ...
-        applicationId = "com.example.iot_tea"
-        
-        // --- THIS IS THE SECTION TO FIX ---
-        // Use = and ( ) for Kotlin Script
-        minSdkVersion(20) 
-        targetSdkVersion(33)
-        versionCode = flutterVersionCode
-        versionName = flutterVersionName
-        multiDexEnabled = true // Use =
-        // --- END OF FIX ---
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 
-    signingConfigs {
-        create("debug") {
-            // ... your debug signing config
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_11.toString()
+    }
+
+    defaultConfig {
+        applicationId = "com.example.iot_tea"
+        minSdkVersion(24)
+        targetSdk = flutter.targetSdkVersion
+        versionCode = flutter.versionCode
+        versionName = flutter.versionName
+
+        // Build only arm ABIs to avoid x86/x86_64 native toolchain issues
+        ndk {
+            abiFilters += listOf("armeabi-v7a", "arm64-v8a")
+        }
+    }
+
+    packaging {
+        resources {
+            excludes += listOf(
+                "META-INF/DEPENDENCIES",
+                "META-INF/LICENSE",
+                "META-INF/LICENSE.txt",
+                "META-INF/license.txt",
+                "META-INF/NOTICE",
+                "META-INF/NOTICE.txt",
+                "META-INF/notice.txt",
+                "META-INF/ASL2.0",
+                "META-INF/*.kotlin_module"
+            )
+        }
+        jniLibs {
+            useLegacyPackaging = true
         }
     }
 
     buildTypes {
-        getByName("release") {
-            // ... your release settings
+        release {
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 }
 
-dependencies {
-    // --- THIS IS THE OTHER SECTION TO FIX ---
-    // Use ("...") for Kotlin Script
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version")
-    implementation("androidx.multidex:multidex:2.0.1")
-    // --- END OF FIX ---
+
+flutter {
+    source = "../.."
 }

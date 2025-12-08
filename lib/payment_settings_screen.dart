@@ -71,10 +71,7 @@ class _PaymentSettingsScreenState extends State<PaymentSettingsScreen> {
                         const SizedBox(height: 20),
                         const Text(
                           'Current Price per Kilogram',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey,
-                          ),
+                          style: TextStyle(fontSize: 16, color: Colors.grey),
                         ),
                         const SizedBox(height: 12),
                         if (!_isEditing)
@@ -106,7 +103,10 @@ class _PaymentSettingsScreenState extends State<PaymentSettingsScreen> {
                               Expanded(
                                 child: TextField(
                                   controller: _controller,
-                                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                  keyboardType:
+                                      const TextInputType.numberWithOptions(
+                                        decimal: true,
+                                      ),
                                   decoration: InputDecoration(
                                     prefixText: 'LKR ',
                                     border: OutlineInputBorder(
@@ -125,31 +125,40 @@ class _PaymentSettingsScreenState extends State<PaymentSettingsScreen> {
                               const SizedBox(width: 10),
                               ElevatedButton(
                                 onPressed: () async {
-                                  final value = double.tryParse(_controller.text);
+                                  final messenger = ScaffoldMessenger.of(
+                                    context,
+                                  );
+                                  final value = double.tryParse(
+                                    _controller.text,
+                                  );
                                   if (value != null && value > 0) {
                                     await payment.setPrice(value);
                                     setState(() {
                                       _isEditing = false;
                                     });
-                                    if (mounted) {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(
-                                          content: Text('Price updated successfully!'),
-                                          backgroundColor: Colors.green,
-                                        ),
-                                      );
-                                    }
-                                  } else {
-                                    ScaffoldMessenger.of(context).showSnackBar(
+                                    messenger.showSnackBar(
                                       const SnackBar(
-                                        content: Text('Please enter a valid price'),
+                                        content: Text(
+                                          'Price updated successfully!',
+                                        ),
+                                        backgroundColor: Colors.green,
+                                      ),
+                                    );
+                                  } else {
+                                    messenger.showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'Please enter a valid price',
+                                        ),
                                         backgroundColor: Colors.red,
                                       ),
                                     );
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppTheme.primaryGreen(context),
+                                  backgroundColor: AppTheme.primaryGreen(
+                                    context,
+                                  ),
                                 ),
                                 child: const Text('Save'),
                               ),
@@ -176,10 +185,22 @@ class _PaymentSettingsScreenState extends State<PaymentSettingsScreen> {
                           ),
                         ),
                         const SizedBox(height: 16),
-                        _buildEarningRow('10 kg', payment.calculateEarnings(10)),
-                        _buildEarningRow('20 kg', payment.calculateEarnings(20)),
-                        _buildEarningRow('50 kg', payment.calculateEarnings(50)),
-                        _buildEarningRow('100 kg', payment.calculateEarnings(100)),
+                        _buildEarningRow(
+                          '10 kg',
+                          payment.calculateEarnings(10),
+                        ),
+                        _buildEarningRow(
+                          '20 kg',
+                          payment.calculateEarnings(20),
+                        ),
+                        _buildEarningRow(
+                          '50 kg',
+                          payment.calculateEarnings(50),
+                        ),
+                        _buildEarningRow(
+                          '100 kg',
+                          payment.calculateEarnings(100),
+                        ),
                       ],
                     ),
                   ),
@@ -198,10 +219,7 @@ class _PaymentSettingsScreenState extends State<PaymentSettingsScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            weight,
-            style: const TextStyle(fontSize: 16),
-          ),
+          Text(weight, style: const TextStyle(fontSize: 16)),
           Text(
             'LKR ${earnings.toStringAsFixed(2)}',
             style: TextStyle(
