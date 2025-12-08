@@ -7,7 +7,7 @@ plugins {
 }
 android {
     namespace = "com.example.iot_tea"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 34
     ndkVersion = "27.0.12077973"
 
     compileOptions {
@@ -21,10 +21,11 @@ android {
 
     defaultConfig {
         applicationId = "com.example.iot_tea"
-        minSdkVersion(24)
-        targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
+        minSdk = 24
+        targetSdk = 34
+        versionCode = 1
+        versionName = "1.0"
+        multiDexEnabled = true
 
         // Build only arm ABIs to avoid x86/x86_64 native toolchain issues
         ndk {
@@ -58,6 +59,11 @@ android {
     }
 }
 
+dependencies {
+    implementation("com.google.android.gms:play-services-auth:21.0.0")
+    implementation("com.google.android.gms:play-services-safetynet:18.0.1")
+    implementation("androidx.multidex:multidex:2.0.1")
+}
 
 flutter {
     source = "../.."
