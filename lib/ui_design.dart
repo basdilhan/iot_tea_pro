@@ -65,7 +65,6 @@ class UIDesign {
         primary: accentCyan,
         secondary: accentPurple,
         surface: charcoalElevated,
-        background: charcoal,
         error: errorRed,
       ),
       scaffoldBackgroundColor: charcoal,
@@ -91,8 +90,8 @@ class UIDesign {
         backgroundColor: charcoalElevated,
         indicatorColor: accentCyan.withOpacity(0.20),
         elevation: 1,
-        labelTextStyle: MaterialStateProperty.resolveWith((states) {
-          final selected = states.contains(MaterialState.selected);
+        labelTextStyle: WidgetStateProperty.resolveWith((states) {
+          final selected = states.contains(WidgetState.selected);
           return TextStyle(
             fontSize: 12,
             fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
@@ -141,8 +140,8 @@ class UIDesign {
       ),
       dividerColor: outlineDark,
       switchTheme: SwitchThemeData(
-        thumbColor: MaterialStateProperty.all(accentCyan),
-        trackColor: MaterialStateProperty.all(accentCyan.withOpacity(0.4)),
+        thumbColor: WidgetStateProperty.all(accentCyan),
+        trackColor: WidgetStateProperty.all(accentCyan.withOpacity(0.4)),
       ),
       progressIndicatorTheme: const ProgressIndicatorThemeData(
         color: accentCyan,

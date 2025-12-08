@@ -567,7 +567,7 @@ class _WorkerDashboardScreenState extends State<WorkerDashboardScreen>
                                     ),
                                   ),
                                 );
-                              }).toList(),
+                              }),
                             ],
                           ),
                         const SizedBox(height: 20),

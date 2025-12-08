@@ -170,8 +170,8 @@ class _WorkerLoginScreenState extends State<WorkerLoginScreen> {
                   'Phone Auth NOT ENABLED in Firebase Console!\n\n'
                       'Steps to fix:\n'
                       '1. Go to Firebase Console\n'
-                      '2. Authentication > Sign-in method\n' +
-                  '3. Enable "Phone" provider\n' +
+                      '2. Authentication > Sign-in method\n'
+                      '3. Enable "Phone" provider\n' +
                   '4. Click Save\n' +
                   '5. Download NEW google-services.json\n' +
                   '6. Replace in android/app/ folder\n' +
@@ -181,9 +181,9 @@ class _WorkerLoginScreenState extends State<WorkerLoginScreen> {
             case 'project-not-found':
               errorMsg =
                   'App configuration error.\n\n'
-                      '1. Download latest google-services.json from Firebase\n'
-                      '2. Replace the file in android/app/\n'
-                      '3. Make sure SHA-1 fingerprint is registered\n' +
+                  '1. Download latest google-services.json from Firebase\n'
+                  '2. Replace the file in android/app/\n'
+                  '3. Make sure SHA-1 fingerprint is registered\n'
                   '4. Rebuild the app';
               break;
             case 'web-context-cancelled':
@@ -201,8 +201,8 @@ class _WorkerLoginScreenState extends State<WorkerLoginScreen> {
                   'reCAPTCHA / Play Integrity verification failed.\n\n'
                       'Fix steps:\n'
                       '• Add BOTH SHA-1 and SHA-256 fingerprints to Firebase (Project settings → Android app)\n'
-                      '  - SHA-1: 6F:AF:5F:64:4C:9C:8A:EB:6E:EA:E0:5F:9E:0D:AF:2B:E3:AF:D5:90\n' +
-                  '  - SHA-256: A5:73:DB:1A:D2:6E:89:0D:4B:D9:95:08:6C:C6:20:C8:AC:4D:DA:EB:E0:F3:7E:15:82:6E:84:5A:15:E0:B9:61\n' +
+                      '  - SHA-1: 6F:AF:5F:64:4C:9C:8A:EB:6E:EA:E0:5F:9E:0D:AF:2B:E3:AF:D5:90\n'
+                      '  - SHA-256: A5:73:DB:1A:D2:6E:89:0D:4B:D9:95:08:6C:C6:20:C8:AC:4D:DA:EB:E0:F3:7E:15:82:6E:84:5A:15:E0:B9:61\n' +
                   '• Download a fresh google-services.json after adding fingerprints and replace android/app/google-services.json\n' +
                   '• Make sure Google Play Services is up to date and VPN is off\n' +
                   '• Reinstall the app after updating google-services.json';
@@ -219,8 +219,8 @@ class _WorkerLoginScreenState extends State<WorkerLoginScreen> {
                     'Invalid phone number or Firebase configuration.\n\n'
                         'Ensure:\n'
                         '• Phone format is +94XXXXXXXXX\n'
-                        '• Phone Auth is enabled in Firebase\n' +
-                    '• google-services.json is current\n\n' +
+                        '• Phone Auth is enabled in Firebase\n'
+                        '• google-services.json is current\n\n' +
                     'Error Details: ${e.message}';
               }
           }

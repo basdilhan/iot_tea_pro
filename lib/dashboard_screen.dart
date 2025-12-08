@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:intl/intl.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'dart:math' as math;
 import 'ui_design.dart';
-import 'animated_welcome_message.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -252,13 +250,6 @@ class _DashboardScreenState extends State<DashboardScreen>
                     padding: const EdgeInsets.all(16),
                     child: Column(
                       children: [
-                        // Welcome Message
-                        AnimatedWelcomeMessage(
-                          userName: 'Collector',
-                          userRole: 'Dashboard Manager',
-                          showTeaLeaf: true,
-                        ),
-                        const SizedBox(height: 20),
                         // Stats Grid
                         Row(
                           children: [
