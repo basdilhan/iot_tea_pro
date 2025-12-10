@@ -470,9 +470,7 @@ class _WorkerDashboardScreenState extends State<WorkerDashboardScreen>
                                     (record['timestamp'] as int?) ?? 0;
                                 final date = timestamp > 0
                                     ? DateTime.fromMillisecondsSinceEpoch(
-                                        timestamp > 9999999999
-                                            ? timestamp
-                                            : timestamp * 1000,
+                                        timestamp,
                                       )
                                     : DateTime.now();
                                 final timeStr = DateFormat(

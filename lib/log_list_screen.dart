@@ -304,7 +304,7 @@ class _LogListScreenState extends State<LogListScreen> {
                                   DateFormat('hh:mm:ss a') // Just the time
                                       .format(
                                         DateTime.fromMillisecondsSinceEpoch(
-                                          timestamp * 1000,
+                                          timestamp,
                                         ),
                                       );
                             }
