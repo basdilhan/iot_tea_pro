@@ -1,0 +1,251 @@
+================================================================================
+                    TEA LEAF APP - CODE FILES SUMMARY
+================================================================================
+
+CREATED: December 11, 2025
+REPOSITORY: https://github.com/basdilhan/iot_tea_pro
+PROJECT: IoT Tea Leaf Weighing & Worker Management System
+
+================================================================================
+                          MOST IMPORTANT FILES
+================================================================================
+
+1. MAIN.DART
+   Purpose: Main app entry point and theme configuration
+   Lines: ~153
+   Key Classes: AppTheme, TeaWeigherApp
+   Features:
+   - Firebase initialization
+   - Multi-provider state management
+   - Light/Dark theme support
+   - Material Design 3 theme
+   - Tea-themed colors (Navy, Brown, Grey)
+
+2. AUTH_WRAPPER.DART
+   Purpose: Authentication and routing logic
+   Lines: ~64+
+   Features:
+   - Onboarding management
+   - Auth state checking
+   - Role-based navigation
+   - SharedPreferences persistence
+
+3. WORKER_LOGIN_SCREEN.DART
+   Purpose: Phone authentication with OTP verification
+   Key Features:
+   - Firebase Phone Auth integration
+   - E.164 phone format validation
+   - 6-digit OTP code verification
+   - SafetyNet/Play Integrity support
+   - reCAPTCHA redirect handling
+   - Error handling with user-friendly messages
+
+4. SMART_WEIGNING_SCREEN.DART
+   Purpose: Weighing scale integration
+   Features:
+   - Scale data capture
+   - Farmer selection
+   - Real-time weight display
+   - Firebase Realtime Database storage
+   - Server timestamp integration
+
+5. LOG_LIST_SCREEN.DART
+   Purpose: Weighing history display
+   Features:
+   - Date picker for historical view
+   - Search by farmer name
+   - Timestamp display (FIXED: milliseconds handling)
+   - Earnings calculation
+   - Weight sorting (newest first)
+
+6. WORKER_DASHBOARD_SCREEN.DART
+   Purpose: Worker analytics dashboard
+   Features:
+   - Recent records display
+   - Earnings calculation
+   - Performance metrics
+   - Bottom navigation
+   - Real-time data sync
+
+7. PAYMENT_PROVIDER.DART
+   Purpose: Payment calculations
+   Features:
+   - Dynamic price per kg
+   - Earnings calculation: Weight × Price per kg
+   - Currency formatting (LKR/Rs)
+   - Provider pattern for state management
+
+8. THEME_PROVIDER.DART
+   Purpose: Dark/Light theme management
+   Features:
+   - Toggle theme mode
+   - SharedPreferences persistence
+   - ChangeNotifier for reactive updates
+   - System theme detection
+
+9. FIREBASE_OPTIONS.DART
+   Purpose: Firebase configuration
+   Database URL: https://tealeafpro-default-rtdb.firebaseio.com
+   Project ID: tealeafpro
+   Platforms: Android, iOS, Web
+
+10. UI_DESIGN.DART
+    Purpose: UI constants and design utilities
+    Features:
+    - Color palettes
+    - Typography settings
+    - Spacing constants
+    - Border radius values
+    - Shadow definitions
+
+================================================================================
+                        FIREBASE DATABASE STRUCTURE
+================================================================================
+
+/workers/{workerId}
+  - phone_number: "+94XXXXXXXXX"
+  - name: "Worker Name"
+  - active: true/false
+  - role: "worker"
+
+/weighing_logs/{dateKey}/Logs_ID_{number}
+  - farmer_id: "ID123"
+  - farmer_name: "Farmer Name"
+  - weight: 25.5
+  - unit: "kg"
+  - timestamp: 1702115047000 (milliseconds)
+  - device_id: "SCALE-01"
+
+/price_per_kg: 100 (LKR per kg)
+
+================================================================================
+                          RECENT FIXES (Dec 2025)
+================================================================================
+
+FIX 1: TIMESTAMP DISPLAY
+  Issue: Wrong times showing in weighing history
+  Cause: Multiplying Firebase milliseconds by 1000
+  Solution: Removed multiplication - Firebase uses milliseconds directly
+  Files: log_list_screen.dart, worker_dashboard_screen.dart
+  Status: FIXED ✓
+
+FIX 2: FIREBASE PHONE AUTH
+  Issue: reCAPTCHA/Play Integrity verification failures
+  Cause: Missing SafetyNet dependencies
+  Solution: 
+    - Added play-services-safetynet:18.0.1
+    - Added reCAPTCHA redirect handler
+    - Configured Firebase app credentials
+  Status: FIXED ✓
+
+FIX 3: ANDROID COMPILATION
+  Issue: Plugin compilation failures
+  Solution: Updated compileSdk to 36
+  Status: FIXED ✓
+
+================================================================================
+                      ANDROID BUILD CONFIGURATION
+================================================================================
+
+compileSdk: 36
+targetSdk: 34
+minSdk: 24
+NDK Version: 27.0.12077973
+ABI Filters: armeabi-v7a, arm64-v8a
+
+Key Dependencies:
+  - firebase_core
+  - firebase_auth
+  - firebase_database
+  - firebase_storage
+  - google_maps_flutter
+  - provider (state management)
+  - shared_preferences
+  - geolocator
+  - intl (date formatting)
+
+================================================================================
+                      AUTHENTICATION FLOW
+================================================================================
+
+1. User enters phone number (+94XXXXXXXXX)
+2. App validates phone format and finds worker in Firebase
+3. Firebase sends SMS OTP to phone
+4. User enters 6-digit OTP code
+5. App verifies code with Firebase
+6. If successful:
+   - Store worker ID in SharedPreferences
+   - Store user role
+   - Navigate to WorkerMainScreen
+7. Dashboard loads with worker analytics
+
+================================================================================
+                        COLOR SCHEME (Tea Theme)
+================================================================================
+
+LIGHT MODE:
+  Primary Navy: #1A365D
+  Secondary Brown: #8B4513
+  Accent Grey: #4B5563
+  Background: #F7FAFC
+
+DARK MODE:
+  Primary Navy: #4A90E2
+  Secondary Brown: #CD853F
+  Accent Grey: #6B7280
+  Background: #1F2937
+
+================================================================================
+                          QUICK BUILD COMMANDS
+================================================================================
+
+Clean Build:
+  flutter clean
+
+Build Debug APK:
+  flutter build apk --debug
+
+Build Release APK:
+  flutter build apk --release
+
+Build Web:
+  flutter build web
+
+Run on Device:
+  flutter run
+
+Run on Chrome:
+  flutter run -d chrome
+
+Install APK:
+  adb install -r app-debug.apk
+
+================================================================================
+                        TESTING CREDENTIALS
+================================================================================
+
+Test Phone Numbers:
+  - +94771234567
+  - +94765544332
+
+Web Test OTP:
+  - 123456
+
+Firebase Project:
+  Project ID: tealeafpro
+  Console: https://console.firebase.google.com
+
+================================================================================
+                          FILES CREATED
+================================================================================
+
+1. TEA_LEAF_APP_CODE_DOCUMENTATION.md (Detailed markdown documentation)
+2. TEA_LEAF_APP_CODE_SUMMARY.txt (This file)
+
+Both files can be opened in Microsoft Word or any text editor.
+For complete source code, visit: https://github.com/basdilhan/iot_tea_pro
+
+================================================================================
+                            LAST UPDATED
+                          December 11, 2025
+================================================================================
